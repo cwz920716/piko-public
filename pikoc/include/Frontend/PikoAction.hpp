@@ -8,46 +8,45 @@
 
 class PikoAction : public clang::ASTFrontendAction {
 public:
-	explicit PikoAction(
-			PipeSummary *p
-		, std::map<std::string, stageSummary>* s
-		, int passNum)
-		: psum_(p)
-		, stageMap_(s)
-		, passNum_(passNum)
-	{}
+  explicit PikoAction(
+      PipeSummary *p
+    , std::map<std::string, stageSummary>* s
+    , int passNum)
+    : psum_(p)
+    , stageMap_(s)
+    , passNum_(passNum)
+  {}
 
-	virtual clang::ASTConsumer *CreateASTConsumer(
-		clang::CompilerInstance &ci, llvm::StringRef inFile)
-	{
-		return new PikoASTConsumer(ci, psum_, stageMap_, passNum_);
-	}
+  virtual std::unique_ptr<clang::ASTConsumer> CreateASTConsumer(
+    clang::CompilerInstance &ci, llvm::StringRef inFile) {
+    return llvm::make_unique<PikoASTConsumer>(ci, psum_, stageMap_, passNum_);
+  }
 
 private:
-	PipeSummary* psum_;
-	std::map<std::string, stageSummary>* stageMap_;
-	int passNum_;
+  PipeSummary* psum_;
+  std::map<std::string, stageSummary>* stageMap_;
+  int passNum_;
 };
 
 class PikoActionFactory : public clang::tooling::FrontendActionFactory {
 public:
-	PikoActionFactory(
-			PipeSummary *p
-		, std::map<std::string, stageSummary>* s
-		, int passNum)
-		: psum_(p)
-		, stageMap_(s)
-		, passNum_(passNum)
-	{}
+  PikoActionFactory(
+      PipeSummary *p
+    , std::map<std::string, stageSummary>* s
+    , int passNum)
+    : psum_(p)
+    , stageMap_(s)
+    , passNum_(passNum)
+  {}
 
-	virtual clang::FrontendAction* create() {
-		return new PikoAction(psum_, stageMap_, passNum_);
-	}
+  virtual clang::FrontendAction* create() {
+    return new PikoAction(psum_, stageMap_, passNum_);
+  }
 
 private:
-	PipeSummary* psum_;
-	std::map<std::string, stageSummary>* stageMap_;
-	int passNum_;
+  PipeSummary* psum_;
+  std::map<std::string, stageSummary>* stageMap_;
+  int passNum_;
 };
 
 #endif // PIKO_ACTION_HPP

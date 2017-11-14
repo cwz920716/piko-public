@@ -14,9 +14,9 @@ std::string getRefName(clang::DeclRefExpr *f);
 clang::Stmt* unrollCasts(clang::Stmt *s);
 bool findFuncRecur(clang::Stmt *s, std::string name);
 bool getSourceCode(clang::CXXMethodDecl *m, const clang::SourceManager &srcMgr,
-	std::string &srcFileName, std::string &src);
+  std::string &srcFileName, std::string &src);
 int getTemplateArgInt(clang::TemplateArgument tmp, const clang::ASTContext& context,
-	std::string msg);
+  std::string msg);
 void verifyNonNegative(int val, std::string msg);
 
 #endif //CLANG_UTILITIES_HPP

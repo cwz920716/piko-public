@@ -163,10 +163,10 @@ CVEC_FUNC cvec3f cross( const cvec3f& v1, const cvec3f& v2 )
 
 CVEC_FUNC void matmultvec4f(const float * matrix, const cvec4f& v, cvec4f& ssv)
 {
-        ssv.x = matrix[0] * v.x + matrix[4] * v.y +  matrix[8] * v.z + matrix[12] * v.w;
-        ssv.y = matrix[1] * v.x + matrix[5] * v.y +  matrix[9] * v.z + matrix[13] * v.w;
-        ssv.z = matrix[2] * v.x + matrix[6] * v.y + matrix[10] * v.z + matrix[14] * v.w;
-        ssv.w = matrix[3] * v.x + matrix[7] * v.y + matrix[11] * v.z + matrix[15] * v.w;
+  ssv.x = matrix[0] * v.x + matrix[4] * v.y +  matrix[8] * v.z + matrix[12] * v.w;
+  ssv.y = matrix[1] * v.x + matrix[5] * v.y +  matrix[9] * v.z + matrix[13] * v.w;
+  ssv.z = matrix[2] * v.x + matrix[6] * v.y + matrix[10] * v.z + matrix[14] * v.w;
+  ssv.w = matrix[3] * v.x + matrix[7] * v.y + matrix[11] * v.z + matrix[15] * v.w;
 }
 
 

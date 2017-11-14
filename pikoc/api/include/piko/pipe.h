@@ -7,8 +7,8 @@
 
 template <class S1, class S2>
 static void pikoConnect(S1& outStg, S2& inStg, const int outPortNum, const int inPortNum) {
-	outStg.outPort[outPortNum] = &inStg;
-	inStg.inPort[inPortNum] = &outStg;
+  outStg.outPort[outPortNum] = &inStg;
+  inStg.inPort[inPortNum] = &outStg;
 }
 
 class PikoPipe

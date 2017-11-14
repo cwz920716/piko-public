@@ -6,35 +6,35 @@
 using namespace std;
 
 bool compBranchesFurthest(vector<stageSummary*> a, vector<stageSummary*> b) {
-	return (a[0]->distFromDrain > b[0]->distFromDrain);
+  return (a[0]->distFromDrain > b[0]->distFromDrain);
 }
 
 bool compBranchesClosest(vector<stageSummary*> a, vector<stageSummary*> b) {
-	return (a[0]->distFromDrain < b[0]->distFromDrain);
+  return (a[0]->distFromDrain < b[0]->distFromDrain);
 }
 
 bool isInCycleRecur(stageSummary *target, stageSummary *path, vector<stageSummary*> visited) {
-	// if a stage looped around to itself
-	if(target == path)
-		return true;
-	else {
-		// if we haven't been to this stage already
-		if(std::find(visited.begin(), visited.end(), path) == visited.end()) {
-			visited.push_back(path);
-			bool ret = false;
-			for(unsigned i=0; i<path->prevStages.size(); i++) {
-				ret |= isInCycleRecur(target, path->prevStages[i], visited);
-			}
-			return ret;
-		}
-		else
-			return false;
-	}
+  // if a stage looped around to itself
+  if(target == path)
+    return true;
+  else {
+    // if we haven't been to this stage already
+    if(std::find(visited.begin(), visited.end(), path) == visited.end()) {
+      visited.push_back(path);
+      bool ret = false;
+      for(unsigned i=0; i<path->prevStages.size(); i++) {
+        ret |= isInCycleRecur(target, path->prevStages[i], visited);
+      }
+      return ret;
+    }
+    else
+      return false;
+  }
 }
 
 bool isInCycle(stageSummary *target, stageSummary *path) {
-	vector<stageSummary*> visited;
-	return isInCycleRecur(target, path, visited);
+  vector<stageSummary*> visited;
+  return isInCycleRecur(target, path, visited);
 }
 
 bool branchReady(vector<stageSummary*> branch, vector<stageSummary*> doneStages, int whichSchedule) {
@@ -65,7 +65,7 @@ bool branchReady(vector<stageSummary*> branch, vector<stageSummary*> doneStages,
 }
 
 // generate kernel plan
-void PipeSummary::generateKernelPlan(ostream& outfile){
+void PipeSummary::generateKernelPlan(ostream& outfile) {
 
   // step 1: discover drain nodes
   //printf("-----------\n");
@@ -711,7 +711,7 @@ bool PipeSummary::canFuse(stageSummary& s1, stageSummary& s2, int whichSchedule,
   // the following flag will check s1 and s2 run in the same core
   bool sameCore = false;
 
-  sameCore = sameCore;
+  // sameCore = sameCore;
 
   // fusing DirectMap scheduler
   sameCore = sameCore || ((sch2.schedPolicy    == sch1.schedPolicy) &&

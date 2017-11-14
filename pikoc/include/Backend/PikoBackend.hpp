@@ -9,40 +9,41 @@
 #include <string>
 #include <vector>
 
-#include "llvm/Module.h"
+#include "llvm/IR/Module.h"
 
 class PikoBackend {
 public:
-	explicit PikoBackend(
-			const PikocOptions& pikocOptions
-		,	PipeSummary& psum
-		, std::vector< std::vector<stageSummary*> >& kernelList)
-		: pikocOptions(pikocOptions)
-		, psum(psum)
-		, kernelList(kernelList)
-	{}
+  explicit PikoBackend(
+      const PikocOptions& pikocOptions
+    , PipeSummary& psum
+    , std::vector< std::vector<stageSummary*> >& kernelList)
+    : pikocOptions(pikocOptions)
+    , psum(psum)
+    , kernelList(kernelList)
+  {}
 
-	virtual ~PikoBackend() {}
+  virtual ~PikoBackend() {}
 
-	virtual bool createLLVMModule();
-	virtual bool optimizeLLVMModule(int optLevel);
+  virtual bool createLLVMModule();
+  virtual bool optimizeLLVMModule(int optLevel);
 
-	virtual bool emitDefines(std::ostream& outfile) = 0;
-	virtual bool emitRunFunc(std::ostream& outfile) = 0;
-	virtual bool emitDeviceCode(std::string filename) = 0;
+  // TODO(wcui) what's the purpose of emits?
+  virtual bool emitDefines(std::ostream& outfile) = 0;
+  virtual bool emitRunFunc(std::ostream& outfile) = 0;
+  virtual bool emitDeviceCode(std::string filename) = 0;
 
-	virtual bool emitAllocateFunc(std::ostream& outfile) = 0;
-	virtual bool emitPrepareFunc(std::ostream& outfile) = 0;
-	virtual bool emitRunSingleFunc(std::ostream& outfile) = 0;
-	virtual bool emitDestroyFunc(std::ostream& outfile) = 0;
+  virtual bool emitAllocateFunc(std::ostream& outfile) = 0;
+  virtual bool emitPrepareFunc(std::ostream& outfile) = 0;
+  virtual bool emitRunSingleFunc(std::ostream& outfile) = 0;
+  virtual bool emitDestroyFunc(std::ostream& outfile) = 0;
 
 protected:
-	virtual std::string getTargetTriple() = 0;
+  virtual std::string getTargetTriple() = 0;
 
-	const PikocOptions& pikocOptions;
-	PipeSummary& psum;
-	std::vector< std::vector<stageSummary*> >& kernelList;
-	llvm::Module* module;
+  const PikocOptions& pikocOptions;
+  PipeSummary& psum;
+  std::vector< std::vector<stageSummary*> >& kernelList;
+  llvm::Module* module;
 };
 
 #endif // PIKO_BACKEND_HPP

@@ -14,8 +14,8 @@
 enum eAssignPolicy{
   assignCustom = 0,
   assignInBin,
-	assignBoundingBox,
-	assignPosition,
+  assignBoundingBox,
+  assignPosition,
   assignEmpty,
   assignCount,
 };
@@ -58,11 +58,11 @@ enum eProcPolicy{
 // from string
 
 inline eAssignPolicy  toAssignPolicy(const std::string& s){
-  if     (s=="Custom")    	return assignCustom;
-  else if(s=="InBin")     	return assignInBin;
-	else if(s=="BoundingBox") return assignBoundingBox;
-	else if(s=="Position")		return assignPosition;
-  else if(s=="Empty")				return assignEmpty;
+  if     (s=="Custom")      return assignCustom;
+  else if(s=="InBin")       return assignInBin;
+  else if(s=="BoundingBox") return assignBoundingBox;
+  else if(s=="Position")    return assignPosition;
+  else if(s=="Empty")       return assignEmpty;
   else assert(0);
 
   return assignCount;
@@ -110,12 +110,12 @@ inline eProcPolicy    toProcPolicy(const std::string& s){
 inline std::string toString(const eAssignPolicy& e){
 
   switch(e){
-    case assignCustom:    	return "Custom";  break;
-    case assignInBin:     	return "InBin";   break;
-    case assignEmpty:     	return "Empty";   break;
-		case assignBoundingBox:	return "BoundingBox"; break;
-		case assignPosition:		return "Position"; break;
-    default:              	return "error";   break;
+    case assignCustom:      return "Custom";  break;
+    case assignInBin:       return "InBin";   break;
+    case assignEmpty:       return "Empty";   break;
+    case assignBoundingBox: return "BoundingBox"; break;
+    case assignPosition:    return "Position"; break;
+    default:                return "error";   break;
   };
 }
 inline std::string toString(const eSchedPolicy& e){
@@ -164,48 +164,49 @@ inline std::string toString(const eProcPolicy p){
 
 class stageSummary;
 
+// TODO(wcui) what's the purpose of bucketLoopID/bucketLoopLevel/trivial?
 class assignBinSummary{
 public:
-  std::string  	           codeFile;
-  std::string  	           sourceCode;
+  std::string          codeFile;
+  std::string          sourceCode;
   eAssignPolicy        policy;
   int                  kernelID;
   int                  bucketLoopLevel;
-	int									 bucketLoopID;
-	bool								 trivial;
+  int                  bucketLoopID;
+  bool                 trivial;
 
   assignBinSummary(){
     codeFile          = "noAssignFile";
-		sourceCode				= "";
+    sourceCode        = "";
     policy            = assignCustom;
     kernelID  = -1;
     bucketLoopLevel   = 0;
-		bucketLoopID			= 0;
-		trivial						= false;
+    bucketLoopID      = 0;
+    trivial           = false;
   }
 
 };
 
 class scheduleSummary{
 public:
-  std::string                  codeFile;
-  std::string									sourceCode;
+  std::string             codeFile;
+  std::string             sourceCode;
   eArchs                  arch;
   eSchedPolicy            schedPolicy;
-	int											tileSplitSize;
+  int                     tileSplitSize;
   eWaitPolicy             waitPolicy;
   int                     waitBatchSize;
-  std::string                  endStageName;
+  std::string             endStageName;
   stageSummary*           endStagePtr;
   int                     kernelID;
   int                     bucketLoopLevel;
-	int											bucketLoopID;
+  int                     bucketLoopID;
   bool                    isPreScheduleCandidate;
-	bool										trivial;
+  bool                    trivial;
 
   scheduleSummary(){
     codeFile                = "noSchedFile";
-		sourceCode							= "";
+    sourceCode              = "";
     arch                    = archGPU;
     schedPolicy             = schedCustom;
     tileSplitSize           = 0;
@@ -213,34 +214,34 @@ public:
     waitBatchSize           = 0;
     kernelID                = -1;
     bucketLoopLevel         = 0;
-		bucketLoopID						= 0;
+    bucketLoopID            = 0;
     isPreScheduleCandidate  = false;
     endStageName            = "";
     endStagePtr             = NULL;
-		trivial										= false;
+    trivial                 = false;
   }
 };
 
 class processSummary{
 public:
-  std::string                  codeFile;
-  std::string									sourceCode;
+  std::string             codeFile;
+  std::string             sourceCode;
   int                     maxOutPrims;
   int                     kernelID;
   int                     bucketLoopLevel;
-	int											bucketLoopID;
+  int                     bucketLoopID;
   eProcPolicy             policy;
-	bool										trivial;
+  bool                    trivial;
 
   processSummary(){
     codeFile    = "noProcessFile";
-		sourceCode	= "";
+    sourceCode  = "";
     maxOutPrims = 1;
     kernelID  = -1;
     bucketLoopLevel = 0;
-		bucketLoopID		= 0;
+    bucketLoopID    = 0;
     policy      = procCustom;
-		trivial				= false;
+    trivial     = false;
   }
 };
 
@@ -252,19 +253,19 @@ public:
   int                     typeNumber;
   std::string                  codeFile;
   vec2i                   binsize;
-	int											threadsPerTile;
-	std::string									primTypeIn;
-	std::string									primTypeOut;
+  int                     threadsPerTile;
+  std::string             primTypeIn;
+  std::string             primTypeOut;
   std::vector<stageSummary*>   nextStages;
   std::vector<stageSummary*>   prevStages;
   std::vector<std::string>          nextStageNames;
-	std::vector< std::vector<stageSummary*> > nextStagesByPort;
+  std::vector< std::vector<stageSummary*> > nextStagesByPort;
   assignBinSummary        assignBin;
   std::vector<scheduleSummary> schedules;
   processSummary          process;
   bool                    fusedWithNext;
-	bool                    loopStart;
-	bool                    loopEnd;
+  bool                    loopStart;
+  bool                    loopEnd;
   int                     outPortTypes[5];
 
   int                     distFromDrain;
@@ -274,47 +275,47 @@ public:
   }
 
   stageSummary(){
-    name						= "nostage";
-    codeFile				= "noStageCodeFile";
-    binsize					= vec2i(0,0); // 0,0 indicates fullscreen bin
-		threadsPerTile	= 1;
-    distFromDrain		= INT_MAX;
+    name            = "nostage";
+    codeFile        = "noStageCodeFile";
+    binsize         = vec2i(0,0); // 0,0 indicates fullscreen bin
+    threadsPerTile  = 1;
+    distFromDrain   = INT_MAX;
     schedules.resize(archCount);
-		for(int i=0; i<5; ++i) {
-			std::vector<stageSummary*> tmp;
-			nextStagesByPort.push_back(tmp);
-		}
-		fusedWithNext = false;
-		loopStart = false;
-		loopEnd = false;
+    for(int i=0; i<5; ++i) {
+      std::vector<stageSummary*> tmp;
+      nextStagesByPort.push_back(tmp);
+    }
+    fusedWithNext = false;
+    loopStart = false;
+    loopEnd = false;
 
-		outPortTypes[0] = 0;
-		for(int i=1; i<5; ++i) {
-			outPortTypes[i] = -1;
-		}
+    outPortTypes[0] = 0;
+    for(int i=1; i<5; ++i) {
+      outPortTypes[i] = -1;
+    }
   }
 
-	std::string toString() {
-		std::stringstream ss;
+  std::string toString() {
+    std::stringstream ss;
 
-		ss <<  "name: " << name << "\n";
-		ss << "  type: " << type << "\n";
-		ss << "  fullType: " << fullType << "\n";
-		ss << "  bin size: " << binsize.x() << ", " << binsize.y() << "\n";
-		ss << "  threads per tile: " << threadsPerTile << "\n";
-		ss << "  prim type - in: " << primTypeIn << "\n";
-		ss << "  prim type - out: " << primTypeOut << "\n";
-		ss << "  outPortTypes[0]: " << outPortTypes[0] << "\n";
-		ss << "  outPortTypes[1]: " << outPortTypes[1] << "\n";
-		ss << "  outPortTypes[2]: " << outPortTypes[2] << "\n";
-		ss << "  outPortTypes[3]: " << outPortTypes[3] << "\n";
-		ss << "  outPortTypes[4]: " << outPortTypes[4] << "\n";
+    ss <<  "name: " << name << "\n";
+    ss << "  type: " << type << "\n";
+    ss << "  fullType: " << fullType << "\n";
+    ss << "  bin size: " << binsize.x() << ", " << binsize.y() << "\n";
+    ss << "  threads per tile: " << threadsPerTile << "\n";
+    ss << "  prim type - in: " << primTypeIn << "\n";
+    ss << "  prim type - out: " << primTypeOut << "\n";
+    ss << "  outPortTypes[0]: " << outPortTypes[0] << "\n";
+    ss << "  outPortTypes[1]: " << outPortTypes[1] << "\n";
+    ss << "  outPortTypes[2]: " << outPortTypes[2] << "\n";
+    ss << "  outPortTypes[3]: " << outPortTypes[3] << "\n";
+    ss << "  outPortTypes[4]: " << outPortTypes[4] << "\n";
 
-		return ss.str();
-	}
+    return ss.str();
+  }
 
-	void findKernelOrder(int kernelID, int batch, std::vector< std::pair<int,std::string> > *order);
-	bool isCurOrPrevStage(stageSummary *stg);
+  void findKernelOrder(int kernelID, int batch, std::vector< std::pair<int,std::string> > *order);
+  bool isCurOrPrevStage(stageSummary *stg);
 };
 
 
@@ -330,24 +331,24 @@ public:
   std::string               filename;
   std::vector<stageSummary> stages;
   std::vector<stageSummary*> stagesInOrder;
-	std::vector<stageSummary*> drainStages;
+  std::vector<stageSummary*> drainStages;
 
   std::string         constState_type; // pipeline state type
   std::string         mutableState_type; // pipeline state type
   std::string         input_type; // pipeline input type
 
-	bool								 preferDepthFirst;
-	bool								hasLoop;
+  bool                preferDepthFirst;
+  bool                hasLoop;
 
   PipeSummary(){
     name              = "nopipe";
     filename          = "unknown.piko";
-		preferDepthFirst  = true;
-		hasLoop						= false;
+    preferDepthFirst  = true;
+    hasLoop           = false;
   }
 
   stageSummary* findStageByName(const std::string& stageName);
-	std::vector<stageSummary*> findStageByType(const std::string& typeName);
+  std::vector<stageSummary*> findStageByType(const std::string& typeName);
 
   void displaySummary();
 

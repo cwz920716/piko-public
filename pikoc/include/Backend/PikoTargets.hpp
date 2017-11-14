@@ -1,8 +1,8 @@
 namespace pikoc {
 
 enum Targets {
-	PTX,
-	CPU
+  PTX,
+  CPU
 };
 
 } // namespace pikoc

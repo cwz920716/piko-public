@@ -30,14 +30,14 @@ std::string trim(const std::string &str) {
 }
 
 std::vector< std::vector<stageSummary*> > makeKernelList(PipeSummary psum,
-																												 bool optimize)
+                                                         bool optimize)
 {
-	std::vector< std::vector<stageSummary*> > kernelList;
+  std::vector< std::vector<stageSummary*> > kernelList;
 
-	std::vector<stageSummary*> curKernel;
+  std::vector<stageSummary*> curKernel;
 
-	for(int i = 0; i < psum.stagesInOrder.size(); ++i) {
-		stageSummary* ssum = psum.stagesInOrder[i];
+  for(int i = 0; i < psum.stagesInOrder.size(); ++i) {
+    stageSummary* ssum = psum.stagesInOrder[i];
 
 		if(i == 0) {
 			curKernel.push_back(ssum);
@@ -326,6 +326,7 @@ void PressEnterToContinue()
 
 static llvm::cl::extrahelp CommonHelp(clang::tooling::CommonOptionsParser::HelpMessage);
 static llvm::cl::extrahelp MoreHelp("\nMore help here\n");
+static llvm::cl::OptionCategory PikoCategory("Piko options");
 
 int main(int argc, char *argv[]) {
 
@@ -384,9 +385,10 @@ int main(int argc, char *argv[]) {
 	}
 
 	int clangArgCount = clangArgs.size();
-	clang::tooling::CommonOptionsParser optionsParser(clangArgCount, clangArgs.data());
-	clang::tooling::ClangTool pikoTool(optionsParser.GetCompilations(),
-																		 optionsParser.GetSourcePathList());
+	clang::tooling::CommonOptionsParser optionsParser(clangArgCount,
+    clangArgs.data(), PikoCategory);
+	clang::tooling::ClangTool pikoTool(optionsParser.getCompilations(),
+																		 optionsParser.getSourcePathList());
 
 	PipeSummary pSum;
 	std::map<std::string, stageSummary> stageMap;

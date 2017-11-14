@@ -8,40 +8,40 @@
 
 class PikocOptions {
 public:
-	pikoc::Targets target;
-	bool optimize;
-	bool enableTimers;
-	bool dumpIR;
-	bool edit;
-	bool inlineDevice;
-	bool displayGrid;
+  pikoc::Targets target;
+  bool optimize;
+  bool enableTimers;
+  bool dumpIR;
+  bool edit;
+  bool inlineDevice;
+  bool displayGrid;
 
-	std::string osString;
+  std::string osString;
 
-	std::string workingDir;
-	std::string clangResourceDir;
-	std::string cudaIncludeDir;
-	std::string pikoIncludeDir;
-	std::string inFileName;
+  std::string workingDir;
+  std::string clangResourceDir;
+  std::string cudaIncludeDir;
+  std::string pikoIncludeDir;
+  std::string inFileName;
 
-	int numRuns;
+  int numRuns;
 
-	std::vector<std::string> includeDirs;
+  std::vector<std::string> includeDirs;
 
-	PikocOptions() {
-		target = pikoc::PTX;
-		optimize = false;
-		enableTimers = false;
-		dumpIR = false;
-		edit = false;
-		inlineDevice = false;
-		displayGrid = false;
+  PikocOptions() {
+    target = pikoc::PTX;
+    optimize = false;
+    enableTimers = false;
+    dumpIR = false;
+    edit = false;
+    inlineDevice = false;
+    displayGrid = false;
 
-		numRuns = 1;
-	}
+    numRuns = 1;
+  }
 
-	static void printOptions();
-	static PikocOptions parseOptions(int argc, char *argv[]);
+  static void printOptions();
+  static PikocOptions parseOptions(int argc, char *argv[]);
 };
 
 #endif // PIKOC_OPTIONS_HPP

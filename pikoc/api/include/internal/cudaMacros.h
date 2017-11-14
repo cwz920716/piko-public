@@ -8,15 +8,15 @@
 #include <iostream>
 
 #define CUDACHECK(command)\
-	{\
-		CUresult cudaStatus = command;\
-		if (cudaStatus != CUDA_SUCCESS) {\
-			std::cerr << "CUDA Error" << std::endl;\
-			std::string cudaMessage = getCudaDrvErrorString(cudaStatus);\
-			std::cerr << "\t" << #command << " failed with error \'" << cudaMessage.c_str() << "\'" << std::endl;\
-			assert(cudaStatus == CUDA_SUCCESS);\
-			exit(-1);\
-		}\
-	}
+  {\
+    CUresult cudaStatus = command;\
+    if (cudaStatus != CUDA_SUCCESS) {\
+      std::cerr << "CUDA Error" << std::endl;\
+      std::string cudaMessage = getCudaDrvErrorString(cudaStatus);\
+      std::cerr << "\t" << #command << " failed with error \'" << cudaMessage.c_str() << "\'" << std::endl;\
+      assert(cudaStatus == CUDA_SUCCESS);\
+      exit(-1);\
+    }\
+  }
 
 #endif // CUDA_MACROS_H

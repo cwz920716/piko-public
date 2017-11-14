@@ -6,66 +6,66 @@
 #include "llvm/Support/raw_ostream.h"
 
 std::string getCalledFuncName(clang::CallExpr *expr) {
-	clang::CXXDependentScopeMemberExpr* depExpr =
-		llvm::dyn_cast<clang::CXXDependentScopeMemberExpr>(expr->getCallee());
+  clang::CXXDependentScopeMemberExpr* depExpr =
+    llvm::dyn_cast<clang::CXXDependentScopeMemberExpr>(expr->getCallee());
 
-	std::string funcName =
-		(depExpr)
-		? depExpr->getMemberNameInfo().getAsString()
-		: getFuncName(expr->getDirectCallee());
+  std::string funcName =
+    (depExpr)
+    ? depExpr->getMemberNameInfo().getAsString()
+    : getFuncName(expr->getDirectCallee());
 
-		return funcName;
+    return funcName;
 }
 
 std::string getFuncName(clang::FunctionDecl *f) {
-	if(f == NULL) {
-		std::cerr << "cannot get function declaration\n";
-		return "";
-	}
-	else {
-		clang::DeclarationName declName = f->getNameInfo().getName();
-		return declName.getAsString();
-	}
+  if(f == NULL) {
+    std::cerr << "cannot get function declaration\n";
+    return "";
+  }
+  else {
+    clang::DeclarationName declName = f->getNameInfo().getName();
+    return declName.getAsString();
+  }
 }
 
 std::string getRefName(clang::DeclRefExpr *f) {
-	if(f == NULL) {
-		std::cerr << "cannot get function declaration\n";
-		return "";
-	}
-	else {
-		clang::DeclarationName declName = f->getNameInfo().getName();
-		return declName.getAsString();
-	}
+  if(f == NULL) {
+    std::cerr << "cannot get function declaration\n";
+    return "";
+  }
+  else {
+    clang::DeclarationName declName = f->getNameInfo().getName();
+    return declName.getAsString();
+  }
 }
 
 clang::Stmt* unrollCasts(clang::Stmt *s) {
-	clang::Stmt *tmp = s;
-	while(llvm::isa<clang::CastExpr>(tmp)) {
-		clang::StmtRange child = tmp->children();
-		tmp = *child;
-	}
-	return tmp;
+  clang::Stmt *tmp = s;
+  while(llvm::isa<clang::CastExpr>(tmp)) {
+    clang::StmtRange child = tmp->children();
+    tmp = *child;
+  }
+  return tmp;
 }
 
 bool findFuncRecur(clang::Stmt *s, std::string name) {
-	for(clang::StmtRange range = s->children(); range; ++range) {
-		clang::Stmt *curStmt = (*range);
-		if(curStmt == NULL) continue;
-		if(llvm::isa<clang::CallExpr>(curStmt)) {
-			clang::CallExpr *call = llvm::cast<clang::CallExpr>(curStmt);
-			clang::FunctionDecl *f = call->getDirectCallee();
-			if(getFuncName(f) == name) return true;
-		}
-			if(findFuncRecur(curStmt, name)) return true;
-	}
-	return false;
+  for(clang::StmtRange range = s->children(); range; ++range) {
+    clang::Stmt *curStmt = (*range);
+    if(curStmt == NULL) continue;
+    if(llvm::isa<clang::CallExpr>(curStmt)) {
+      clang::CallExpr *call = llvm::cast<clang::CallExpr>(curStmt);
+      clang::FunctionDecl *f = call->getDirectCallee();
+      if(getFuncName(f) == name) return true;
+    }
+      if(findFuncRecur(curStmt, name)) return true;
+  }
+  return false;
 }
 
 bool getSourceCode(clang::CXXMethodDecl *m, const clang::SourceManager &srcMgr,
-										std::string &srcFileName, std::string &src) {
+                   std::string &srcFileName, std::string &src) {
   std::string codeStartLineString;
-	int codeStartLine;
+  int codeStartLine;
   std::string codeEndLineString;
   int codeEndLine;
 
@@ -85,35 +85,35 @@ bool getSourceCode(clang::CXXMethodDecl *m, const clang::SourceManager &srcMgr,
 
   if(codeStartLine > codeEndLine) {
     src = "";
-		return true;
+    return true;
   }
 
-	std::ifstream srcFile(srcFileName.c_str());
-	if(!srcFile.is_open()) {
-		llvm::errs() << "Unable to open source file " << srcFileName << "\n";
-		return false;
-	}
+  std::ifstream srcFile(srcFileName.c_str());
+  if(!srcFile.is_open()) {
+    llvm::errs() << "Unable to open source file " << srcFileName << "\n";
+    return false;
+  }
 
-	std::string l;
-	std::vector<std::string> lines;
-	while(!srcFile.eof()) {
-		getline(srcFile, l);
-		lines.push_back(l);
-	}
-	srcFile.close();
+  std::string l;
+  std::vector<std::string> lines;
+  while(!srcFile.eof()) {
+    getline(srcFile, l);
+    lines.push_back(l);
+  }
+  srcFile.close();
 
-	l = "";
-	for(int i=codeStartLine-1; i < codeEndLine; ++i) {
-		l += lines[i] + "\n";
-	}
+  l = "";
+  for(int i=codeStartLine-1; i < codeEndLine; ++i) {
+    l += lines[i] + "\n";
+  }
 
-	src = l;
+  src = l;
 
-	return true;
+  return true;
 }
 
 int getTemplateArgInt(clang::TemplateArgument tmp, const clang::ASTContext& context,
-											std::string msg) {
+                      std::string msg) {
   llvm::APSInt tmpArgInt;
   if(!tmp.getAsExpr()->EvaluateAsInt(tmpArgInt, context)) {
     llvm::errs() << msg << "\n";
