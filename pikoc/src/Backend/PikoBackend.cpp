@@ -7,13 +7,12 @@
 #include "clang/Lex/Preprocessor.h"
 #include "clang/Parse/ParseAST.h"
 
-#include "llvm/LLVMContext.h"
-#include "llvm/PassManager.h"
+#include "llvm/IR/LLVMContext.h"
+#include "llvm/IR/PassManager.h"
 #include "llvm/Transforms/IPO/PassManagerBuilder.h"
 #include "llvm/Transforms/IPO.h"
 
-bool PikoBackend::createLLVMModule()
-{
+bool PikoBackend::createLLVMModule() {
   clang::CompilerInstance *CI = new clang::CompilerInstance();
   CI->createDiagnostics(0,0);
 
@@ -72,8 +71,7 @@ bool PikoBackend::createLLVMModule()
 	return true;
 }
 
-bool PikoBackend::optimizeLLVMModule(int optLevel)
-{
+bool PikoBackend::optimizeLLVMModule(int optLevel) {
   llvm::PassManagerBuilder   passBuilder;
   llvm::PassManager          modPassMgr;
   llvm::FunctionPassManager  fnPassMgr(module);

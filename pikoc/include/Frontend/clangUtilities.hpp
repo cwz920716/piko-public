@@ -7,6 +7,7 @@
 #include <clang/AST/Decl.h>
 #include <clang/AST/DeclCXX.h>
 #include <clang/AST/Expr.h>
+#include <clang/AST/ExprCXX.h>
 
 std::string getCalledFuncName(clang::CallExpr *f);
 std::string getFuncName(clang::FunctionDecl *f);

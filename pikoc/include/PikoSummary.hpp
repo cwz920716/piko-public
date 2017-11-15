@@ -13,6 +13,7 @@
 
 enum eAssignPolicy{
   assignCustom = 0,
+  // TODO(wcui) output Bin == input Bin
   assignInBin,
   assignBoundingBox,
   assignPosition,

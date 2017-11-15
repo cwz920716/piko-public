@@ -1,9 +1,9 @@
 #include "Backend/PTXBackend.hpp"
 
-#include "llvm/Instructions.h"
-#include "llvm/Module.h"
-#include "llvm/TypeBuilder.h"
-#include "llvm/PassManager.h"
+#include "llvm/IR/Instructions.h"
+#include "llvm/IR/Module.h"
+#include "llvm/IR/TypeBuilder.h"
+#include "llvm/IR/PassManager.h"
 #include "llvm/Support/raw_ostream.h"
 #include "llvm/Transforms/IPO/PassManagerBuilder.h"
 #include "llvm/Transforms/IPO.h"

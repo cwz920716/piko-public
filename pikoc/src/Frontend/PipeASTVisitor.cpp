@@ -4,224 +4,198 @@
 
 bool PipeASTVisitor::VisitCXXRecordDecl(clang::CXXRecordDecl *decl) {
 
-	// Stop if errors have occurred in compilation
-	if(context.getDiagnostics().hasErrorOccurred()) {
-		llvm::errs() << "Compilation errors have occurred. "
-		<< "Please resolve the above error messages.\n";
-		exit(5);
-		return false;
-	}
-
-	if(pipeFound)
-		return true;
-
-	if(!decl->hasDefinition())
-		return true;
-
-	clang::CXXRecordDecl *defn = decl->getDefinition();
-
-	if(!isPikoPipe(defn))
-  {
-		return true;
+  // Stop if errors have occurred in compilation
+  if(context.getDiagnostics().hasErrorOccurred()) {
+    llvm::errs() << "Compilation errors have occurred. "
+    << "Please resolve the above error messages.\n";
+    exit(5);
+    return false;
   }
 
-	pipeFound = true;
-	psum->name = defn->getIdentifier()->getName();
+  if(pipeFound)
+    return true;
 
-	bool constState_type_found = false;
-	bool mutableState_type_found = false;
-	bool input_type_found = false;
+  if(!decl->hasDefinition())
+    return true;
 
-	//Add Stages to Pipe
-	for(clang::RecordDecl::field_iterator
-			bf = defn->field_begin(), ef = defn->field_end(); bf != ef; ++bf)
-	{
-		std::string var_name = bf->getNameAsString();
+  clang::CXXRecordDecl *defn = decl->getDefinition();
 
-		if(var_name == "constState_")
-		{
-			if(bf->getType()->isPointerType())
-			{
+  if(!isPikoPipe(defn)) {
+    return true;
+  }
 
-				const clang::QualType& qt = bf->getType()->getPointeeType();
+  pipeFound = true;
+  psum->name = defn->getIdentifier()->getName();
 
-				psum->constState_type = qt.getAsString();
+  bool constState_type_found = false;
+  bool mutableState_type_found = false;
+  bool input_type_found = false;
 
-				printf("Found constant state type %s\n", psum->constState_type.c_str());
+  //Add Stages to Pipe
+  for(clang::RecordDecl::field_iterator
+      bf = defn->field_begin(), ef = defn->field_end(); bf != ef; ++bf) {
+    std::string var_name = bf->getNameAsString();
 
-				constState_type_found = true;
-			}
-			else
-			{
-				__DEB;
-			}
-		}
+    if(var_name == "constState_") {
+      if(bf->getType()->isPointerType()) {
 
-		if(var_name == "mutableState_")
-		{
-			if(bf->getType()->isPointerType())
-			{
+        const clang::QualType& qt = bf->getType()->getPointeeType();
 
-				const clang::QualType& qt = bf->getType()->getPointeeType();
+        psum->constState_type = qt.getAsString();
 
-				psum->mutableState_type = qt.getAsString();
+        printf("Found constant state type %s\n", psum->constState_type.c_str());
 
-				printf("Found mutable state type %s\n", psum->mutableState_type.c_str());
+        constState_type_found = true;
+      } else {
+        __DEB;
+      }
+    }
 
-				mutableState_type_found = true;
-			}
-			else
-			{
-				__DEB;
-			}
-		}
+    if(var_name == "mutableState_") {
+      if(bf->getType()->isPointerType()) {
 
-		if(!bf->getType()->isRecordType())
-			continue;
+        const clang::QualType& qt = bf->getType()->getPointeeType();
 
-		clang::CXXRecordDecl *fieldClass =  bf->getType()->getAsCXXRecordDecl();
+        psum->mutableState_type = qt.getAsString();
 
-		if(var_name == "h_input")
-		{
-			if(fieldClass->getNameAsString() == "PikoArray")
-			{
-				assert(llvm::isa<clang::TemplateSpecializationType>(bf->getType()));
+        printf("Found mutable state type %s\n", psum->mutableState_type.c_str());
 
-				const clang::TemplateSpecializationType* temptype =
-				llvm::cast<clang::TemplateSpecializationType>(bf->getType());
+        mutableState_type_found = true;
+      } else {
+        __DEB;
+      }
+    }
 
-				assert(temptype->getNumArgs() == 1);
+    if(!bf->getType()->isRecordType())
+      continue;
 
-				psum->input_type =
-					temptype->getArgs()[0].getAsType()->getAsCXXRecordDecl()->getNameAsString();
+    clang::CXXRecordDecl *fieldClass =  bf->getType()->getAsCXXRecordDecl();
 
-				printf("Found input type %s\n", psum->input_type.c_str());
+    if(var_name == "h_input") {
+      if(fieldClass->getNameAsString() == "PikoArray") {
+        assert(llvm::isa<clang::TemplateSpecializationType>(bf->getType()));
 
-				input_type_found = true;
-			}
-			else
-			{
-				__DEB;
-			}
-		}
+        const clang::TemplateSpecializationType* temptype =
+        llvm::cast<clang::TemplateSpecializationType>(bf->getType());
 
-		if(!StageASTVisitor::isPikoStage(fieldClass))
-			continue;
+        assert(temptype->getNumArgs() == 1);
 
-		if(!fieldClass->hasDefinition())
-		{
-			llvm::errs() <<
-				"No definition for stage " << fieldClass->getNameAsString() <<
-				" used in pipe " << psum->name <<  "\n";
-			return false;
-		}
+        psum->input_type =
+          temptype->getArgs()[0].getAsType()->getAsCXXRecordDecl()->getNameAsString();
 
-		clang::CXXRecordDecl *fieldClassDefn = fieldClass->getDefinition();
+        printf("Found input type %s\n", psum->input_type.c_str());
 
-		if(!addStageToPipe(fieldClassDefn, *bf)) {
-			llvm::errs() << "Unable to add stage \"" << bf->getNameAsString()
-				<< "\" of type \"" << fieldClass->getNameAsString()
-				<< "\" to pipe \"" << psum->name <<  "\"\n";
-			return false;
-		}
+        input_type_found = true;
+      } else {
+        __DEB;
+      }
+    }
 
-		printf("Added stage %s\n", bf->getNameAsString().c_str());
-	}
+    if(!StageASTVisitor::isPikoStage(fieldClass))
+      continue;
 
-	assert(constState_type_found && mutableState_type_found && input_type_found);
+    if(!fieldClass->hasDefinition()) {
+      llvm::errs() <<
+        "No definition for stage " << fieldClass->getNameAsString() <<
+        " used in pipe " << psum->name <<  "\n";
+      return false;
+    }
 
-	//Find pikoConnect calls
-	//for(CXXRecordDecl::ctor_iterator
-	//		bc = defn->ctor_begin(), ec = defn->ctor_end(); bc != ec; ++bc) {
-	//}
-	clang::Stmt *ctorBody = defn->ctor_begin()->getBody();
-	for(clang::Stmt::child_range child = ctorBody->children(); child; ++child)
-	{
-		//(*child)->dump();
+    clang::CXXRecordDecl *fieldClassDefn = fieldClass->getDefinition();
 
-		if(!llvm::isa<clang::CallExpr>(*child))
-		{
-			//printf("  exiting early\n");
-			continue;
-		}
-		else
-		{
-		}
+    if(!addStageToPipe(fieldClassDefn, *bf)) {
+      llvm::errs() << "Unable to add stage \"" << bf->getNameAsString()
+        << "\" of type \"" << fieldClass->getNameAsString()
+        << "\" to pipe \"" << psum->name <<  "\"\n";
+      return false;
+    }
 
-		clang::CallExpr *pikoConn = llvm::cast<clang::CallExpr>(*child);
+    printf("Added stage %s\n", bf->getNameAsString().c_str());
+  }
 
-		if(getFuncName(pikoConn->getDirectCallee()) != "pikoConnect")
-		{
-			continue;
-		}
-		else
-		{
-		}
+  assert(constState_type_found && mutableState_type_found && input_type_found);
 
-		clang::MemberExpr *outStage =
-			llvm::cast<clang::MemberExpr>(unrollCasts(pikoConn->getArg(0)));
-		clang::MemberExpr *inStage =
-			llvm::cast<clang::MemberExpr>(unrollCasts(pikoConn->getArg(1)));
+  //Find pikoConnect calls
+  //for(CXXRecordDecl::ctor_iterator
+  //		bc = defn->ctor_begin(), ec = defn->ctor_end(); bc != ec; ++bc) {
+  //}
+  clang::Stmt *ctorBody = defn->ctor_begin()->getBody();
+  for(clang::Stmt::child_iterator child = ctorBody->child_begin(),
+      child_end = ctorBody->child_end(); child != child_end; ++child) {
+    //(*child)->dump();
 
-		std::string outStageName = outStage->getMemberNameInfo().getAsString();
-		std::string inStageName = inStage->getMemberNameInfo().getAsString();
+    if(!llvm::isa<clang::CallExpr>(*child)) {
+      //printf("  exiting early\n");
+      continue;
+    }
 
-		stageSummary *outStageSum = psum->findStageByName(outStageName);
-		stageSummary *inStageSum = psum->findStageByName(inStageName);
+    clang::CallExpr *pikoConn = llvm::cast<clang::CallExpr>(*child);
 
-		llvm::APSInt outPortInt;
-		llvm::APSInt inPortInt;
-		if(!pikoConn->getArg(2)->EvaluateAsInt(outPortInt, context)
-				|| !pikoConn->getArg(3)->EvaluateAsInt(inPortInt, context))
-		{
-			llvm::errs() << "pikoConnect port number arguments must "
-				<< "be compile-time constants\n";
-			return false;
-		}
+    if(getFuncName(pikoConn->getDirectCallee()) != "pikoConnect") {
+      continue;
+    }
 
-		int outPortNum = outPortInt.getSExtValue();
-		int inPortNum = inPortInt.getSExtValue();
+    clang::MemberExpr *outStage =
+      llvm::cast<clang::MemberExpr>(unrollCasts(pikoConn->getArg(0)));
+    clang::MemberExpr *inStage =
+      llvm::cast<clang::MemberExpr>(unrollCasts(pikoConn->getArg(1)));
 
-		outStageSum->nextStageNames.push_back(inStageSum->name);
-		outStageSum->nextStagesByPort[outPortNum].push_back(inStageSum);
-		outStageSum->outPortTypes[outPortNum] = inStageSum->typeNumber;
-	}
+    std::string outStageName = outStage->getMemberNameInfo().getAsString();
+    std::string inStageName = inStage->getMemberNameInfo().getAsString();
 
-	psum->processLinks();
+    stageSummary *outStageSum = psum->findStageByName(outStageName);
+    stageSummary *inStageSum = psum->findStageByName(inStageName);
 
-	return true;
+    llvm::APSInt outPortInt;
+    llvm::APSInt inPortInt;
+    if(!pikoConn->getArg(2)->EvaluateAsInt(outPortInt, context)
+        || !pikoConn->getArg(3)->EvaluateAsInt(inPortInt, context)) {
+      llvm::errs() << "pikoConnect port number arguments must "
+        << "be compile-time constants\n";
+      return false;
+    }
+
+    int outPortNum = outPortInt.getSExtValue();
+    int inPortNum = inPortInt.getSExtValue();
+
+    outStageSum->nextStageNames.push_back(inStageSum->name);
+    outStageSum->nextStagesByPort[outPortNum].push_back(inStageSum);
+    outStageSum->outPortTypes[outPortNum] = inStageSum->typeNumber;
+  }
+
+  psum->processLinks();
+
+  return true;
 }
 
 // Must pass in definition
 bool PipeASTVisitor::addStageToPipe(clang::CXXRecordDecl *d, clang::FieldDecl *field) {
-	stageSummary ssum = (*stageMap)[d->getNameAsString()];
+  stageSummary ssum = (*stageMap)[d->getNameAsString()];
 
-	ssum.name = field->getNameAsString();
-	ssum.fullType = field->getType().getAsString();
+  ssum.name = field->getNameAsString();
+  ssum.fullType = field->getType().getAsString();
 
-	psum->stages.push_back(ssum);
+  psum->stages.push_back(ssum);
 
-	return true;
+  return true;
 }
 
 // Must pass in definition
 bool PipeASTVisitor::isPikoPipe(clang::CXXRecordDecl *d) {
-	for(clang::CXXRecordDecl::base_class_iterator
-			bbc = d->bases_begin(), ebc = d->bases_end(); bbc != ebc; ++bbc)
-	{
-		if(bbc->getType().getAsString() == "class PikoPipe")
-    {
-			return true;
+  for(clang::CXXRecordDecl::base_class_iterator
+      bbc = d->bases_begin(), ebc = d->bases_end(); bbc != ebc; ++bbc) {
+    if(bbc->getType().getAsString() == "class PikoPipe") {
+      return true;
     }
-	}
-	return false;
+  }
+  return false;
 }
 
 int PipeASTVisitor::getPortNumber(std::string portName) {
-	if(portName == "out0") return 0;
-	else if(portName == "out1") return 1;
-	else if(portName == "out2") return 2;
-	else if(portName == "out3") return 3;
-	else if(portName == "out4") return 4;
-	else return -1;
+  if(portName == "out0") return 0;
+  else if(portName == "out1") return 1;
+  else if(portName == "out2") return 2;
+  else if(portName == "out3") return 3;
+  else if(portName == "out4") return 4;
+  else return -1;
 }

@@ -34,7 +34,7 @@ typedef unsigned int uint;
 // -- but I can't use fopen_s because I'd like my code to be
 // -- portable. Plus, no one's putting buffer overflow exploits
 // -- in research code :-)
-#pragma warning (disable : 4996)
+// #pragma warning (disable : 4996)
 
 template<typename to, typename from>
 inline to lexical_cast(from const &x) {

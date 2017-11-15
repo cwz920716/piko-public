@@ -330,97 +330,94 @@ static llvm::cl::OptionCategory PikoCategory("Piko options");
 
 int main(int argc, char *argv[]) {
 
-	PikocOptions pikocOptions = PikocOptions::parseOptions(argc, argv);
+  PikocOptions pikocOptions = PikocOptions::parseOptions(argc, argv);
 
-	char currentPath[FILENAME_MAX];
+  char currentPath[FILENAME_MAX];
 
-	if(!GetCurrentDir(currentPath, sizeof(currentPath))) {
-		llvm::errs() << "Unable to get current working directory\n";
-		return 3;
-	}
+  if(!GetCurrentDir(currentPath, sizeof(currentPath))) {
+    llvm::errs() << "Unable to get current working directory\n";
+    return 3;
+  }
 
-	pikocOptions.workingDir = currentPath;
+  pikocOptions.workingDir = currentPath;
 
-	std::string outFileNameDefines =
-		std::string(currentPath) + "/__pikoDefines.h";
-	std::string outFileNameH =
-		std::string(currentPath) + "/__pikoCompiledPipe.h";
-	std::string outFileNameDevice =
-		std::string(currentPath) + "/__pikoCompiledPipe";
+  std::string outFileNameDefines =
+    std::string(currentPath) + "/__pikoDefines.h";
+  std::string outFileNameH =
+    std::string(currentPath) + "/__pikoCompiledPipe.h";
+  std::string outFileNameDevice =
+    std::string(currentPath) + "/__pikoCompiledPipe";
 
-	std::ofstream outfileDefines(outFileNameDefines.c_str(), std::ios::trunc);
-	outfileDefines.flush();
-	if(!outfileDefines.good()) {
-		llvm::errs() << "Unable to open output file " << outFileNameDefines << "\n";
-		return 4;
-	}
+  std::ofstream outfileDefines(outFileNameDefines.c_str(), std::ios::trunc);
+  outfileDefines.flush();
+  if(!outfileDefines.good()) {
+    llvm::errs() << "Unable to open output file " << outFileNameDefines << "\n";
+    return 4;
+  }
 
-	std::ofstream outfile(outFileNameH.c_str(), std::ios::trunc);
-	outfile.flush();
-	if(!outfile.good()) {
-		llvm::errs() << "Unable to open output file " << outFileNameH << "\n";
-		return 4;
-	}
+  std::ofstream outfile(outFileNameH.c_str(), std::ios::trunc);
+  outfile.flush();
+  if(!outfile.good()) {
+    llvm::errs() << "Unable to open output file " << outFileNameH << "\n";
+    return 4;
+  }
 
-	std::vector<const char*> clangArgs;
+  std::vector<const char*> clangArgs;
 
-	clangArgs.push_back("clang++");
-	clangArgs.push_back(pikocOptions.inFileName.c_str());
-	clangArgs.push_back("--");
-	clangArgs.push_back("-D__PIKOC__");
-	clangArgs.push_back("-D__PIKOC_DEVICE__");
-	clangArgs.push_back("-D__PIKOC_HOST__");
-	clangArgs.push_back("-D__PIKOC_ANALYSIS_PHASE__");
-	clangArgs.push_back("-I");
-	clangArgs.push_back(pikocOptions.workingDir.c_str());
-	clangArgs.push_back("-I");
-	clangArgs.push_back(pikocOptions.clangResourceDir.c_str());
-	clangArgs.push_back("-I");
-	clangArgs.push_back(pikocOptions.pikoIncludeDir.c_str());
-	clangArgs.push_back("-I");
-	clangArgs.push_back(pikocOptions.cudaIncludeDir.c_str());
-	for(int i = 0; i < pikocOptions.includeDirs.size(); ++i) {
-		clangArgs.push_back("-I");
-		clangArgs.push_back(pikocOptions.includeDirs[i].c_str());
-	}
+  clangArgs.push_back("clang++");
+  clangArgs.push_back(pikocOptions.inFileName.c_str());
+  clangArgs.push_back("--");
+  clangArgs.push_back("-D__PIKOC__");
+  clangArgs.push_back("-D__PIKOC_DEVICE__");
+  clangArgs.push_back("-D__PIKOC_HOST__");
+  clangArgs.push_back("-D__PIKOC_ANALYSIS_PHASE__");
+  clangArgs.push_back("-I");
+  clangArgs.push_back(pikocOptions.workingDir.c_str());
+  clangArgs.push_back("-I");
+  clangArgs.push_back(pikocOptions.clangResourceDir.c_str());
+  clangArgs.push_back("-I");
+  clangArgs.push_back(pikocOptions.pikoIncludeDir.c_str());
+  clangArgs.push_back("-I");
+  clangArgs.push_back(pikocOptions.cudaIncludeDir.c_str());
+  for(int i = 0; i < pikocOptions.includeDirs.size(); ++i) {
+    clangArgs.push_back("-I");
+    clangArgs.push_back(pikocOptions.includeDirs[i].c_str());
+  }
 
-	int clangArgCount = clangArgs.size();
-	clang::tooling::CommonOptionsParser optionsParser(clangArgCount,
+  int clangArgCount = clangArgs.size();
+  clang::tooling::CommonOptionsParser optionsParser(clangArgCount,
     clangArgs.data(), PikoCategory);
-	clang::tooling::ClangTool pikoTool(optionsParser.getCompilations(),
-																		 optionsParser.getSourcePathList());
+  clang::tooling::ClangTool pikoTool(optionsParser.getCompilations(),
+                                     optionsParser.getSourcePathList());
 
-	PipeSummary pSum;
-	std::map<std::string, stageSummary> stageMap;
+  PipeSummary pSum;
+  std::map<std::string, stageSummary> stageMap;
 
-	for(int i = 1; i <= NUM_CLANG_PASSES; ++i)
-	{
-		pikoTool.run(new PikoActionFactory(&pSum, &stageMap, i));
-	}
+  for(int i = 1; i <= NUM_CLANG_PASSES; ++i) {
+    pikoTool.run(new PikoActionFactory(&pSum, &stageMap, i));
+  }
 
-	//pSum.displaySummary();
-	pSum.generateKernelPlan(std::cout);
-	std::vector< std::vector<stageSummary*> > kernelList =
-		makeKernelList(pSum, pikocOptions.optimize);
+  pSum.displaySummary();
+  pSum.generateKernelPlan(std::cout);
+  std::vector< std::vector<stageSummary*> > kernelList =
+    makeKernelList(pSum, pikocOptions.optimize);
 
-	if(pSum.stages.size() == 0)
-		return 0;
+  if(pSum.stages.size() == 0)
+    return 0;
 
-	for(auto ii = pSum.stages.begin(), ie = pSum.stages.end(); ii != ie; ++ii)
-	{
-		if(ii->loopStart || ii->loopEnd)
-		{
-			pSum.hasLoop = true;
-			break;
-		}
-	}
+  for(auto ii = pSum.stages.begin(), ie = pSum.stages.end(); ii != ie; ++ii) {
+    if(ii->loopStart || ii->loopEnd) {
+      pSum.hasLoop = true;
+      break;
+    }
+  }
 
 	// Emit the pipeline emit functions and the kernels
 	outfile << "//////////////////////////// DEVICE CODE ////////////////////////////\n";
 	generateEmitFunc(pSum, outfile);
 	generateKernels(pSum, outfile, kernelList, pikocOptions.optimize);
 
-	PikoBackend* backend;
+	PikoBackend* backend = nullptr;
 	if(pikocOptions.target == pikoc::PTX)
 		backend = new PTXBackend(pikocOptions, pSum, kernelList);
 	else if(pikocOptions.target == pikoc::CPU)

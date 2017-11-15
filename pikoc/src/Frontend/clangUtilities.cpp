@@ -11,7 +11,7 @@ std::string getCalledFuncName(clang::CallExpr *expr) {
 
   std::string funcName =
     (depExpr)
-    ? depExpr->getMemberNameInfo().getAsString()
+    ? (depExpr->getMemberNameInfo().getAsString())
     : getFuncName(expr->getDirectCallee());
 
     return funcName;
@@ -42,14 +42,15 @@ std::string getRefName(clang::DeclRefExpr *f) {
 clang::Stmt* unrollCasts(clang::Stmt *s) {
   clang::Stmt *tmp = s;
   while(llvm::isa<clang::CastExpr>(tmp)) {
-    clang::StmtRange child = tmp->children();
+    clang::Stmt::child_iterator child = tmp->child_begin();
     tmp = *child;
   }
   return tmp;
 }
 
 bool findFuncRecur(clang::Stmt *s, std::string name) {
-  for(clang::StmtRange range = s->children(); range; ++range) {
+  for(clang::Stmt::child_iterator range = s->child_begin(),
+      range_end = s->child_end(); range != range_end; ++range) {
     clang::Stmt *curStmt = (*range);
     if(curStmt == NULL) continue;
     if(llvm::isa<clang::CallExpr>(curStmt)) {
