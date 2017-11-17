@@ -9,12 +9,14 @@
 
 #include "llvm/IR/LLVMContext.h"
 #include "llvm/IR/PassManager.h"
+#include "llvm/IR/LegacyPassManager.h"
+#include "llvm/Transforms/IPO/AlwaysInliner.h"
 #include "llvm/Transforms/IPO/PassManagerBuilder.h"
 #include "llvm/Transforms/IPO.h"
 
 bool PikoBackend::createLLVMModule() {
   clang::CompilerInstance *CI = new clang::CompilerInstance();
-  CI->createDiagnostics(0,0);
+  CI->createDiagnostics();
 
   std::vector<const char*> args;
   args.push_back("-xc++");
@@ -35,30 +37,36 @@ bool PikoBackend::createLLVMModule() {
 
   llvm::ArrayRef<const char*> argList(args);
   llvm::IntrusiveRefCntPtr<clang::DiagnosticsEngine> diagnostics(&CI->getDiagnostics());
-  clang::CompilerInvocation *compInvoke =
+  auto compInvoke =
     clang::createInvocationFromCommandLine(argList, diagnostics);
-  CI->setInvocation(compInvoke);
+  CI->setInvocation(std::move(compInvoke));
 
-  clang::TargetOptions TO; 
+  clang::TargetOptions TO;
+  // TODO(wcui): TO.Triple = nvptx64-nvidia-cuda for PTX backend?
   TO.Triple = this->getTargetTriple() + "-" + pikocOptions.osString;
+  std::shared_ptr<clang::TargetOptions> p_TargetOptions(&TO);
   clang::TargetInfo* feTarget =
-    clang::TargetInfo::CreateTargetInfo(CI->getDiagnostics(), TO);
+    clang::TargetInfo::CreateTargetInfo(CI->getDiagnostics(), p_TargetOptions);
   CI->setTarget(feTarget);
   CI->createFileManager();
   CI->createSourceManager(CI->getFileManager());
-  CI->createPreprocessor();
+  CI->createPreprocessor(clang::TU_Complete);
   clang::Preprocessor &PP = CI->getPreprocessor();
-  PP.getBuiltinInfo().InitializeBuiltins(PP.getIdentifierTable(),PP.getLangOpts());
+  PP.getBuiltinInfo().initializeBuiltins(PP.getIdentifierTable(),PP.getLangOpts());
 
   CI->createASTContext();
 
   const clang::FileEntry* inFile = CI->getFileManager().getFile(pikocOptions.inFileName);
-  CI->getSourceManager().createMainFileID(inFile);
+  auto id =
+    CI->getSourceManager().getOrCreateFileID(inFile, clang::SrcMgr::C_User);
+  CI->getSourceManager().setMainFileID(id);
   CI->getDiagnosticClient().BeginSourceFile(CI->getLangOpts(), &CI->getPreprocessor());
 
-  llvm::LLVMContext& ctx = llvm::getGlobalContext();
+  llvm::LLVMContext& ctx = GlobalContext;
   clang::CodeGenerator* llvmCodeGen = clang::CreateLLVMCodeGen(
-    CI->getDiagnostics(), "PikoPipe", CI->getCodeGenOpts(), ctx);
+    CI->getDiagnostics(), "PikoPipe",
+    CI->getHeaderSearchOpts(), CI->getPreprocessorOpts(),
+    CI->getCodeGenOpts(), ctx);
 
   clang::ParseAST(CI->getPreprocessor(), llvmCodeGen, CI->getASTContext());
 
@@ -68,18 +76,18 @@ bool PikoBackend::createLLVMModule() {
 
   this->module = llvmCodeGen->GetModule();
 
-	return true;
+  return true;
 }
 
 bool PikoBackend::optimizeLLVMModule(int optLevel) {
   llvm::PassManagerBuilder   passBuilder;
-  llvm::PassManager          modPassMgr;
-  llvm::FunctionPassManager  fnPassMgr(module);
+  llvm::legacy::PassManager  modPassMgr;
+  llvm::legacy::FunctionPassManager  fnPassMgr(module);
 
   passBuilder.OptLevel = optLevel;
 
   if(pikocOptions.inlineDevice)
-    passBuilder.Inliner = llvm::createAlwaysInlinerPass();
+    passBuilder.Inliner = llvm::createAlwaysInlinerLegacyPass();
 
   passBuilder.populateFunctionPassManager(fnPassMgr);
   passBuilder.populateModulePassManager(modPassMgr);

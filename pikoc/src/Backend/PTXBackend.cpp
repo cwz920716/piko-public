@@ -1,6 +1,7 @@
 #include "Backend/PTXBackend.hpp"
 
 #include "llvm/IR/Instructions.h"
+#include "llvm/IR/Constants.h"
 #include "llvm/IR/Module.h"
 #include "llvm/IR/TypeBuilder.h"
 #include "llvm/IR/PassManager.h"
@@ -56,13 +57,11 @@ bool PTXBackend::emitDefines(std::ostream& outfile) {
 
 // This function is currently unused because we are relying on libNVVM
 // for optimizations
-bool PTXBackend::optimizeLLVMModule(int optLevel)
-{
-	return true;
+bool PTXBackend::optimizeLLVMModule(int optLevel) {
+  return true;
 }
 
-bool PTXBackend::emitRunFunc(std::ostream& outfile)
-{
+bool PTXBackend::emitRunFunc(std::ostream& outfile) {
   std::string tabs = "";
   std::string pipeName = psum.name;
   bool optimize = pikocOptions.optimize;
@@ -135,8 +134,7 @@ bool PTXBackend::emitRunFunc(std::ostream& outfile)
 
   for(std::vector<stageSummary>::iterator
       ii = psum.stages.begin(), ie = psum.stages.end();
-      ii != ie; ii++)
-  {
+      ii != ie; ii++) {
     std::string stgName = ii->name;
     std::string stgType = ii->fullType;
     outfile << "  CUdeviceptr d_" << stgName << ";\n";
@@ -158,8 +156,7 @@ bool PTXBackend::emitRunFunc(std::ostream& outfile)
   outfile << "// Make pikoScreen the output of any drain stages\n";
   for(std::vector<stageSummary*>::iterator
       ii = psum.drainStages.begin(), ie = psum.drainStages.end();
-      ii != ie; ++ii)
-  {
+      ii != ie; ++ii) {
     stageSummary* stg = *ii;
     outfile << "  " << stg->name << ".outPort[0] = &pikoScreen;\n";
   }
@@ -182,8 +179,7 @@ bool PTXBackend::emitRunFunc(std::ostream& outfile)
   outfile << "// Setup stages\n";
   for(std::vector<stageSummary*>::iterator
       ii = psum.stagesInOrder.begin(), ie = psum.stagesInOrder.end();
-      ii != ie; ++ii)
-  {
+      ii != ie; ++ii) {
     stageSummary* stg = *ii;
     std::string stgName = stg->name;
     std::string stgType = stg->fullType;
@@ -211,8 +207,7 @@ bool PTXBackend::emitRunFunc(std::ostream& outfile)
 
   for(std::vector< std::vector<stageSummary*> >::iterator
       ii = kernelList.begin(), ie = kernelList.end();
-      ii != ie; ++ii)
-  {
+      ii != ie; ++ii) {
     stageSummary* stg = (*ii)[0];
 
     if(!optimize || !stg->schedules[0].trivial) {
@@ -229,7 +224,7 @@ bool PTXBackend::emitRunFunc(std::ostream& outfile)
     outfile << "\n";
   }
 
-	tabs = "  ";
+  tabs = "  ";
 
   // first run to clean the GPU
   // copy fresh state to device
@@ -237,7 +232,7 @@ bool PTXBackend::emitRunFunc(std::ostream& outfile)
   outfile << tabs << "// ------ FIRST RUN ------\n";
   outfile << tabs << "// -----------------------\n";
   outfile << tabs << "{\n";
-	tabs = "    ";
+  tabs = "    ";
 
   outfile << tabs << "CUdeviceptr d_constState;\n";
   outfile << tabs << "size_t      constStateSize;\n";
@@ -246,13 +241,13 @@ bool PTXBackend::emitRunFunc(std::ostream& outfile)
     << psum.constState_type << ")));\n";
   outfile << tabs << "CUDACHECK(cuMemcpyHtoD(d_mutableState, &h_mutableState, sizeof("
     << psum.mutableState_type << ")));\n";
-	outfile << "\n";
+  outfile << "\n";
   writeKernelCalls(tabs, outfile);
   outfile << tabs << "CUDACHECK(cuCtxSynchronize());\n";
 
-	tabs = "  ";
+  tabs = "  ";
   outfile << tabs << "}\n";
-	outfile << "\n";
+  outfile << "\n";
 
   outfile << tabs << "// -----------------------\n";
   outfile << tabs << "// ------ TIMED RUNS -----\n";
@@ -262,8 +257,8 @@ bool PTXBackend::emitRunFunc(std::ostream& outfile)
   }
   // loop starts here
   outfile << tabs << "for(int i = 0; i < " << pikocOptions.numRuns << "; ++i)\n";
-	outfile << tabs << "{\n";
-	tabs = "    ";
+  outfile << tabs << "{\n";
+  tabs = "    ";
 
   // copy fresh state to device
   outfile << tabs << "CUdeviceptr d_constState;\n";
@@ -273,18 +268,18 @@ bool PTXBackend::emitRunFunc(std::ostream& outfile)
     << psum.mutableState_type << ")));\n";
   outfile << tabs << "CUDACHECK(cuMemcpyHtoD(d_constState, &h_constState, sizeof("
     << psum.constState_type << ")));\n";
-	outfile << "\n";
+  outfile << "\n";
   writeKernelCalls(tabs, outfile);
   outfile << tabs << "CUDACHECK(cuCtxSynchronize());\n";
 
-	tabs = "  ";
+  tabs = "  ";
   outfile << tabs << "}\n";
 
   if(pikocOptions.enableTimers) {
     outfile << tabs << "kernelTime = clock() - kernelTime;\n";
   }
 
-	outfile << "\n";
+  outfile << "\n";
   outfile << "// Get Output\n";
   outfile << "  pixelData = pikoScreen.getData();\n";
   outfile << "\n";
@@ -350,11 +345,10 @@ bool PTXBackend::emitRunFunc(std::ostream& outfile)
   outfile << "#endif // __PIKOC_HOST__\n\n";
 
 
-	return true;
+  return true;
 }
 
-bool PTXBackend::emitDeviceCode(std::string filename)
-{
+bool PTXBackend::emitDeviceCode(std::string filename) {
   std::string outFileName = filename + ".ptx";
   std::string kernelPrefix = "kernel";
   std::string atomicPrefix = "__atomic_";
@@ -410,13 +404,16 @@ bool PTXBackend::emitDeviceCode(std::string filename)
 
     // Add NVVM metadata to specify kernel
     if(name.compare(0, kernelPrefix.length(), kernelPrefix) == 0) {
-      std::vector<llvm::Value*> mdVec;
-      mdVec.push_back(ii);
-      mdVec.push_back(llvm::MDString::get(module->getContext(), "kernel"));
-      mdVec.push_back(llvm::ConstantInt::get(module->getContext(), llvm::APInt(32, 1)));
-
+      auto md0_0 = llvm::ValueAsMetadata::getConstant(&(*ii));
+      auto md0_1 =
+        llvm::MDString::get(module->getContext(), "kernel");
+      auto md0_2 = llvm::ValueAsMetadata::getConstant(
+                     llvm::ConstantInt::get(module->getContext(),
+                                            llvm::APInt(32, 1)));
+      llvm::Metadata *metas[] = { md0_0, md0_1, md0_2 };
+      llvm::ArrayRef<llvm::Metadata *> metas_(metas, 3);
       llvm::MDNode* mdNode =
-        llvm::MDNode::get(module->getContext(), llvm::ArrayRef<llvm::Value*>(mdVec));
+        llvm::MDNode::get(module->getContext(), metas_);
       nvvmMD->addOperand(mdNode);
     }
 
@@ -428,13 +425,10 @@ bool PTXBackend::emitDeviceCode(std::string filename)
     // to replace Piko atomic instructions with LLVM atomic instructions
     std::vector<llvm::CallInst*> callInsts;
     for(llvm::Function::iterator
-        jj = ii->begin(), je = ii->end(); jj != je; ++jj)
-    {
+        jj = ii->begin(), je = ii->end(); jj != je; ++jj) {
       for(llvm::BasicBlock::iterator
-          kk = jj->begin(), ke = jj->end(); kk != ke; ++kk)
-      {
-        if(llvm::CallInst* callInst = llvm::dyn_cast<llvm::CallInst>(&*kk))
-        {
+          kk = jj->begin(), ke = jj->end(); kk != ke; ++kk) {
+        if(llvm::CallInst* callInst = llvm::dyn_cast<llvm::CallInst>(&*kk)) {
           callInst->setCallingConv(llvm::CallingConv::C);
 
           if(!callInst->getCalledFunction())
@@ -442,8 +436,7 @@ bool PTXBackend::emitDeviceCode(std::string filename)
 
           // Replace Piko atomic instructions with LLVM atomic instructions
           std::string calledName = callInst->getCalledFunction()->getName();
-          if(calledName.find(atomicPrefix) != std::string::npos)
-          {
+          if(calledName.find(atomicPrefix) != std::string::npos) {
             llvm::AtomicRMWInst::BinOp op;
 
             if(calledName.compare("__atomic_nvvm_increment__") == 0)
@@ -465,7 +458,7 @@ bool PTXBackend::emitDeviceCode(std::string filename)
 
             llvm::AtomicRMWInst* atomicInst = new llvm::AtomicRMWInst(
               op, callInst->getArgOperand(0), callInst->getArgOperand(1),
-              llvm::Monotonic, llvm::CrossThread, callInst);
+              llvm::AtomicOrdering::Monotonic, llvm::SyncScope::System, callInst);
 
             callInst->replaceAllUsesWith(atomicInst);
             callInsts.push_back(callInst);
@@ -480,9 +473,9 @@ bool PTXBackend::emitDeviceCode(std::string filename)
     }
 
     // Remove attributes that are incompatible with NVVM
-    llvm::Attributes uwTable =
-      llvm::Attributes::get(ii->getContext(), llvm::Attributes::UWTable);
-    ii->removeFnAttr(uwTable);
+    // llvm::Attribute uwTable =
+    //   llvm::Attribute::get(ii->getContext(), llvm::Attribute::UWTable);
+    ii->removeFnAttr(llvm::Attribute::UWTable);
     ii->setAlignment(0);
   }
 
@@ -646,8 +639,7 @@ bool PTXBackend::emitDeviceCode(std::string filename)
 	return true;
 }
 
-bool PTXBackend::emitAllocateFunc(std::ostream& outfile)
-{
+bool PTXBackend::emitAllocateFunc(std::ostream& outfile) {
   std::string tabs = "";
   std::string pipeName = psum.name;
   bool optimize = pikocOptions.optimize;
@@ -702,8 +694,8 @@ bool PTXBackend::emitAllocateFunc(std::ostream& outfile)
   outfile << "  // and map the host pointer to the device pointer\n";
   outfile << "  std::map<void*, CUdeviceptr> stgMap;\n";
 
-  for(std::vector<stageSummary>::iterator ii = psum.stages.begin(), ie = psum.stages.end(); ii != ie; ii++)
-  {
+  for(std::vector<stageSummary>::iterator ii = psum.stages.begin(),
+      ie = psum.stages.end(); ii != ie; ii++) {
     std::string stgName = ii->name;
     std::string stgType = ii->fullType;
     outfile << "  CUDACHECK(cuMemAlloc(&d_" << stgName << ", sizeof(" << stgType << ")));\n";
@@ -721,8 +713,7 @@ bool PTXBackend::emitAllocateFunc(std::ostream& outfile)
   outfile << "  // Make pikoScreen the output of any drain stages\n";
   for(std::vector<stageSummary*>::iterator
       ii = psum.drainStages.begin(), ie = psum.drainStages.end();
-      ii != ie; ++ii)
-  {
+      ii != ie; ++ii) {
     stageSummary* stg = *ii;
     outfile << "  " << stg->name << ".outPort[0] = &pikoScreen;\n";
   }
@@ -739,8 +730,7 @@ bool PTXBackend::emitAllocateFunc(std::ostream& outfile)
   outfile << "  // Setup stages\n";
   for(std::vector<stageSummary*>::iterator
       ii = psum.stagesInOrder.begin(), ie = psum.stagesInOrder.end();
-      ii != ie; ++ii)
-  {
+      ii != ie; ++ii) {
     stageSummary* stg = *ii;
     std::string stgName = stg->name;
     std::string stgType = stg->fullType;
@@ -770,8 +760,7 @@ bool PTXBackend::emitAllocateFunc(std::ostream& outfile)
 
   for(std::vector< std::vector<stageSummary*> >::iterator
       ii = kernelList.begin(), ie = kernelList.end();
-      ii != ie; ++ii)
-  {
+      ii != ie; ++ii) {
     stageSummary* stg = (*ii)[0];
 
     if(!optimize || !stg->schedules[0].trivial) {
@@ -788,8 +777,7 @@ bool PTXBackend::emitAllocateFunc(std::ostream& outfile)
   return true;
 }
 
-bool PTXBackend::emitPrepareFunc(std::ostream& outfile)
-{
+bool PTXBackend::emitPrepareFunc(std::ostream& outfile) {
   std::string tabs = "  ";
   std::string pipeName = psum.name;
   outfile << "void " << pipeName << "::prepare()\n";
@@ -828,8 +816,7 @@ bool PTXBackend::emitRunSingleFunc(std::ostream& outfile)
   return true;
 }
 
-bool PTXBackend::emitDestroyFunc(std::ostream& outfile)
-{
+bool PTXBackend::emitDestroyFunc(std::ostream& outfile) {
   std::string tabs = "  ";
   std::string pipeName = psum.name;
   outfile << "void " << pipeName << "::destroy()\n";
@@ -860,8 +847,9 @@ bool PTXBackend::emitDestroyFunc(std::ostream& outfile)
   return true;
 }
 
-void PTXBackend::writeKernelFunctionFetch(int kernelID, bool bAllocate, std::ostream& outfile)
-{
+void
+PTXBackend::writeKernelFunctionFetch(int kernelID, 
+                                     bool bAllocate, std::ostream& outfile) {
   std::ostringstream ss;
   ss << "kernel" << kernelID;
   std::string kernel = ss.str();
@@ -872,9 +860,8 @@ void PTXBackend::writeKernelFunctionFetch(int kernelID, bool bAllocate, std::ost
   outfile << "\n";
 }
 
-void PTXBackend::writeKernelCalls(std::string tabs, std::ostream& outfile)
-{
-	bool optimize = pikocOptions.optimize;
+void PTXBackend::writeKernelCalls(std::string tabs, std::ostream& outfile) {
+  bool optimize = pikocOptions.optimize;
 
   int curKernel = 0;
   std::string params;
@@ -949,8 +936,7 @@ void PTXBackend::writeKernelCalls(std::string tabs, std::ostream& outfile)
       writeKernelRunner(curKernel, params, tabs, outfile);
       tabs = tabs.substr(0, tabs.size() - 2);
       outfile << tabs << "}\n";
-    }
-    else {
+    } else {
       outfile << tabs << "numBlocks = numBins_" << stgName << ";\n";
       outfile << tabs << "numThreads = " << stg->threadsPerTile << ";\n";
 
@@ -984,14 +970,13 @@ void PTXBackend::writeKernelCalls(std::string tabs, std::ostream& outfile)
 }
 
 void PTXBackend::writeKernelRunner(int kernelID, std::string params, std::string tabs,
-	std::ostream& outfile)
-{
+  std::ostream& outfile) {
   std::ostringstream ss;
   ss << "kernel" << kernelID;
   std::string kernel = ss.str();
 
   if(pikocOptions.displayGrid)
-    outfile << tabs << "printf(\"kernel launch: blocks \%d, thread \%d\\n\",numBlocks, numThreads);\n";
+    outfile << tabs << "printf(\"kernel launch: blocks %d, thread %d\\n\",numBlocks, numThreads);\n";
   outfile << tabs << "void* args_" << kernel << "[] = {" << params << "};\n";
   outfile << tabs << "CUDACHECK(cuLaunchKernel(" << kernel << ",";
   outfile << tabs << " numBlocks, 1, 1, numThreads, 1, 1,";

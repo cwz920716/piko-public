@@ -20,6 +20,7 @@ public:
     : pikocOptions(pikocOptions)
     , psum(psum)
     , kernelList(kernelList)
+    , module(nullptr)
   {}
 
   virtual ~PikoBackend() {}
@@ -44,6 +45,7 @@ protected:
   PipeSummary& psum;
   std::vector< std::vector<stageSummary*> >& kernelList;
   llvm::Module* module;
+  llvm::LLVMContext GlobalContext;
 };
 
 #endif // PIKO_BACKEND_HPP

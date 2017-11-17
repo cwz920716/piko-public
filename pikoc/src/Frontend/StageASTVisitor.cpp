@@ -20,6 +20,8 @@ bool StageASTVisitor::VisitCXXRecordDecl(clang::CXXRecordDecl *decl) {
     return true;
 
   stageSummary ssum;
+  // type is the name of stage, one stage can appear more than once in general?
+  // if one stage appear twice, it will have two stage sum with same type
   ssum.type = d->getNameAsString();
   ssum.typeNumber = getNextTypeNum();
 
