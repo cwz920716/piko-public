@@ -29,20 +29,23 @@ void PikocOptions::printOptions() {
 }
 
 PikocOptions PikocOptions::parseOptions(int argc, char *argv[]) {
-
   if(argc < 2) {
     printOptions();
     exit(10);
   }
 
   PikocOptions options;
+
+  options.Argc = argc;
+  options.Argv = argv;
+
+  options.includeDirs.push_back("/usr/lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0");
+  options.includeDirs.push_back("/usr/lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/x86_64-linux-gnu/c++/5.4.0");
+  options.includeDirs.push_back("/usr/lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/backward");
+  options.includeDirs.push_back("/usr/local/include");
   options.includeDirs.push_back("/include");
   options.includeDirs.push_back("/usr/include");
-  options.includeDirs.push_back("/usr/local/include");
   options.includeDirs.push_back("/usr/include/x86_64-linux-gnu");
-  options.includeDirs.push_back("/usr/lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/backward");
-  options.includeDirs.push_back("/usr/lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/x86_64-linux-gnu/c++/5.4.0");
-  options.includeDirs.push_back("/usr/lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0");
 
   int i;
   for(i = 1; i < argc; ++i) {

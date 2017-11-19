@@ -1,5 +1,5 @@
 
-COMMON_INCLUDES :=  -I/usr/local/cuda/include -I../../api/include -I../.. -IbasicTypes/ -IEasyBMP -IsceneParser/ -Iutil/ -Iassimp/include -Ibezmesh/
+COMMON_INCLUDES :=  -I/usr/local/cuda/include -I../../api/include -I../../include -IbasicTypes -IEasyBMP -IsceneParser -Iutil -Iassimp/include -Ibezmesh
 ASSIMP_LIB_PATH := -Lassimp/lib/
 ASSIMP_LIB := -lassimp
 OBJS := EasyBMP.o vecs.o sceneParser.o bezmesh.o
@@ -14,7 +14,7 @@ bin/pikoraster: dirs pikocGPU main.cpp $(OBJS) basicTypes/rasterTypes.h
 
 pikocGPU: dummy.cpp raster.pikostage vertexShader.pikostage rasterPipe.h basicTypes/rasterTypes.h rasterMacros.h
 	@echo - making __pikoCompiledPipe.ptx
-	@../../bin/pikoc $(COMMON_INCLUDES) --numRuns=10 --opt --timer dummy.cpp
+	@../../bin/pikoc $(COMMON_INCLUDES) dummy.cpp
 
 bin/pikoraster-cpu: dirs pikocCPU main.cpp $(OBJS) basicTypes/rasterTypes.h
 	@echo - making pikoraster-cpu

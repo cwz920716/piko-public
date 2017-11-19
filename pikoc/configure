@@ -45,7 +45,7 @@ then
 else
 	echo "CXX = \$(LLVM_INSTALL_PATH)/bin/clang++" >> Makefile
 	echo "" >> Makefile
-	echo "LIBS = " >> Makefile
+	echo "LIBS = -pthread -lz" >> Makefile
 	echo "NVVM_LIB_PATH = \$(NVVM_PATH)/lib64" >> Makefile
 	echo "" >> Makefile
 fi

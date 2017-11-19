@@ -219,7 +219,8 @@ int imin(int a, int b) {return a<b?a:b;}
 
 #if defined(__PIKOC_PTX__)
 inline void membar_bin() { asm __volatile__("membar.cta;");}
-inline void BinSynchronize() {__syncthreads();}
+void __syncthreads();
+inline void BinSynchronize() { __syncthreads(); }
 inline int   				max_max							(int a, int b, int c)										{ int v; asm __volatile__("vmax.s32.s32.s32.max %0, %1, %2, %3;" : "=r"(v) : "r"(a), "r"(b), "r"(c)); return v; }
 inline int   				min_min							(int a, int b, int c)										{ int v; asm __volatile__("vmin.s32.s32.s32.min %0, %1, %2, %3;" : "=r"(v) : "r"(a), "r"(b), "r"(c)); return v; }
 inline int   				max_add							(int a, int b, int c)										{ int v; asm __volatile__("vmax.s32.s32.s32.add %0, %1, %2, %3;" : "=r"(v) : "r"(a), "r"(b), "r"(c)); return v; }
@@ -236,12 +237,14 @@ inline unsigned   	add_sub							(unsigned a, unsigned b, unsigned c)		{ unsigne
 inline int 					imad 								(int a, int b, int c)										{ int v; asm __volatile__("vmad.s32.s32.s32.sat %0, %1, %2, %3;" : "=r"(v) : "r"(a), "r"(b), "r"(c)); return v; }
 inline unsigned   	slct								(unsigned a, unsigned b, int c)   			{ unsigned v; asm __volatile__("slct.u32.s32 %0, %1, %2, %3;" : "=r"(v) : "r"(a), "r"(b), "r"(c)); return v; }
 inline int   				slct								(int a, int b, int c)   								{ int v; asm __volatile__("slct.s32.s32 %0, %1, %2, %3;" : "=r"(v) : "r"(a), "r"(b), "r"(c)); return v; }
-inline float   			slct								(float a, float b, int c)   						{ float v; asm __volatile__("slct.f32.s32 %0, %1, %2, %3;" : "=f"(v) : "f"(a), "f"(b), "r"(c)); return v; }
+// inline float   			slct								(float a, float b, int c)   						{ float v; asm __volatile__("slct.f32.s32 %0, %1, %2, %3;" : "=f"(v) : "f"(a), "f"(b), "r"(c)); return v; }
 inline unsigned   	isetge							(int a, int b)          								{ unsigned v; asm __volatile__("set.ge.u32.s32 %0, %1, %2;" : "=r"(v) : "r"(a), "r"(b)); return v; }
-inline float   			rcp_approx					(float a)                 							{ float v; asm __volatile__("rcp.approx.ftz.f32 %0, %1;" : "=f"(v) : "f"(a)); return v; }
+// inline float   			rcp_approx					(float a)                 							{ float v; asm __volatile__("rcp.approx.ftz.f32 %0, %1;" : "=f"(v) : "f"(a)); return v; }
+inline float   			rcp_approx					(float a)                 							{ return 1.0f/a; }
 inline unsigned   	f32_to_u32_sat_rmi	(float a)                 							{ unsigned v; asm __volatile__("cvt.rmi.sat.u32.f32 %0, %1;" : "=r"(v) : "f"(a)); return v; }
 inline unsigned   	prmt								(unsigned a, unsigned b, unsigned c)   	{ unsigned v; asm __volatile__("prmt.b32 %0, %1, %2, %3;" : "=r"(v) : "r"(a), "r"(b), "r"(c)); return v; }
-inline float   			fma_rm              (float a, float b, float c)   					{ float v; asm __volatile__("fma.rm.f32 %0, %1, %2, %3;" : "=f"(v) : "f"(a), "f"(b), "f"(c)); return v; }
+// inline float   			fma_rm              (float a, float b, float c)   					{ float v; asm __volatile__("fma.rm.f32 %0, %1, %2, %3;" : "=f"(v) : "f"(a), "f"(b), "f"(c)); return v; }
+inline float   			fma_rm              (float a, float b, float c)   					{ return a*b + c;}
 
 inline unsigned   	idiv_fast						(unsigned a, unsigned b) 								{ return f32_to_u32_sat_rmi(((float)a + 0.5f) / (float)b); }
 

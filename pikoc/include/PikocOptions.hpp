@@ -8,6 +8,9 @@
 
 class PikocOptions {
 public:
+  int Argc;
+  char **Argv;
+
   pikoc::Targets target;
   bool optimize;
   bool enableTimers;
@@ -32,7 +35,7 @@ public:
     target = pikoc::PTX;
     optimize = false;
     enableTimers = false;
-    dumpIR = false;
+    dumpIR = true;
     edit = false;
     inlineDevice = false;
     displayGrid = false;

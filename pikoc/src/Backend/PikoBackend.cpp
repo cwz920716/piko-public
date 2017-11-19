@@ -1,11 +1,15 @@
 #include "Backend/PikoBackend.hpp"
 
-#include "clang/Basic/TargetInfo.h"
-#include "clang/CodeGen/ModuleBuilder.h"
+#include "clang/CodeGen/CodeGenAction.h"
+#include "clang/Basic/DiagnosticOptions.h"
+#include "clang/Driver/Compilation.h"
+#include "clang/Driver/Driver.h"
+#include "clang/Driver/Tool.h"
 #include "clang/Frontend/CompilerInstance.h"
-#include "clang/Frontend/Utils.h"
-#include "clang/Lex/Preprocessor.h"
-#include "clang/Parse/ParseAST.h"
+#include "clang/Frontend/CompilerInvocation.h"
+#include "clang/Frontend/FrontendDiagnostic.h"
+#include "clang/Frontend/TextDiagnosticPrinter.h"
+#include "llvm/ADT/SmallString.h"
 
 #include "llvm/IR/LLVMContext.h"
 #include "llvm/IR/PassManager.h"
@@ -13,68 +17,130 @@
 #include "llvm/Transforms/IPO/AlwaysInliner.h"
 #include "llvm/Transforms/IPO/PassManagerBuilder.h"
 #include "llvm/Transforms/IPO.h"
+#include "llvm/IR/Module.h"
+#include "llvm/Support/FileSystem.h"
+#include "llvm/Support/Host.h"
+#include "llvm/Support/ManagedStatic.h"
+#include "llvm/Support/Path.h"
+#include "llvm/Support/TargetSelect.h"
+#include "llvm/Support/raw_ostream.h"
+
+using namespace clang;
+using namespace clang::driver;
 
 bool PikoBackend::createLLVMModule() {
-  clang::CompilerInstance *CI = new clang::CompilerInstance();
-  CI->createDiagnostics();
+  // void *MainAddr = (void*) (intptr_t) GetExecutablePath;
+  std::string Path = "/usr/local/bin/clang";
+  llvm::errs() << "Path=" << Path << "\n";
 
-  std::vector<const char*> args;
-  args.push_back("-xc++");
-  args.push_back("-D__PIKOC__");
-  args.push_back("-D__PIKOC_DEVICE__");
-  args.push_back("-fno-exceptions");
-  args.push_back("-I");
-  args.push_back(pikocOptions.workingDir.c_str());
-  args.push_back("-I");
-  args.push_back(pikocOptions.clangResourceDir.c_str());
-  args.push_back("-I");
-  args.push_back(pikocOptions.pikoIncludeDir.c_str());
+  llvm::IntrusiveRefCntPtr<DiagnosticOptions> DiagOpts = new DiagnosticOptions();
+  TextDiagnosticPrinter *DiagClient =
+    new TextDiagnosticPrinter(llvm::errs(), &*DiagOpts);
+
+  IntrusiveRefCntPtr<DiagnosticIDs> DiagID(new DiagnosticIDs());
+  DiagnosticsEngine Diags(DiagID, &*DiagOpts, DiagClient);
+
+  // Use ELF on windows for now.
+  std::string TripleStr = this->getTargetTriple() + "-" + "cuda";
+  llvm::Triple T(TripleStr);
+
+  Driver TheDriver(Path, T.str(), Diags);
+  TheDriver.setTitle("PikoPipe");
+  TheDriver.setCheckInputsExist(false);
+
+  llvm::SmallVector<const char *, 32> Args(pikocOptions.Argv,
+    pikocOptions.Argv + pikocOptions.Argc);
+  // llvm::SmallVector<const char *, 32> Args;
+  Args.push_back("-D__PIKOC__");
+  Args.push_back("-D__PIKOC_DEVICE__");
+  Args.push_back("-c");
+  Args.push_back("-emit-llvm");
+
+  std::string include("-I");
+  auto include_cwd = include + pikocOptions.workingDir;
+  // llvm::errs() << pikocOptions.workingDir.c_str() << "\n";
+  Args.push_back(include_cwd.c_str());
+  auto include_piko = include + pikocOptions.pikoIncludeDir;
+  // llvm::errs() << pikocOptions.pikoIncludeDir.c_str() << "\n";
+  Args.push_back(include_piko.c_str());
+  // args.push_back("-I");
+  auto include_res = include + pikocOptions.clangResourceDir;
+  // llvm::errs() << pikocOptions.clangResourceDir.c_str() << "\n";
+  Args.push_back(include_res.c_str());
   for(int i = 0; i < pikocOptions.includeDirs.size(); ++i) {
-    args.push_back("-I");
-    args.push_back(pikocOptions.includeDirs[i].c_str());
+    Args.push_back("-I");
+    Args.push_back(pikocOptions.includeDirs[i].c_str());
   }
-  args.push_back(pikocOptions.inFileName.c_str());
+  // Args.push_back(pikocOptions.inFileName.c_str());
 
-  llvm::ArrayRef<const char*> argList(args);
-  llvm::IntrusiveRefCntPtr<clang::DiagnosticsEngine> diagnostics(&CI->getDiagnostics());
-  auto compInvoke =
-    clang::createInvocationFromCommandLine(argList, diagnostics);
-  CI->setInvocation(std::move(compInvoke));
-
-  clang::TargetOptions TO;
-  // TODO(wcui): TO.Triple = nvptx64-nvidia-cuda for PTX backend?
-  TO.Triple = this->getTargetTriple() + "-" + pikocOptions.osString;
-  std::shared_ptr<clang::TargetOptions> p_TargetOptions(&TO);
-  clang::TargetInfo* feTarget =
-    clang::TargetInfo::CreateTargetInfo(CI->getDiagnostics(), p_TargetOptions);
-  CI->setTarget(feTarget);
-  CI->createFileManager();
-  CI->createSourceManager(CI->getFileManager());
-  CI->createPreprocessor(clang::TU_Complete);
-  clang::Preprocessor &PP = CI->getPreprocessor();
-  PP.getBuiltinInfo().initializeBuiltins(PP.getIdentifierTable(),PP.getLangOpts());
-
-  CI->createASTContext();
-
-  const clang::FileEntry* inFile = CI->getFileManager().getFile(pikocOptions.inFileName);
-  auto id =
-    CI->getSourceManager().getOrCreateFileID(inFile, clang::SrcMgr::C_User);
-  CI->getSourceManager().setMainFileID(id);
-  CI->getDiagnosticClient().BeginSourceFile(CI->getLangOpts(), &CI->getPreprocessor());
-
-  llvm::LLVMContext& ctx = GlobalContext;
-  clang::CodeGenerator* llvmCodeGen = clang::CreateLLVMCodeGen(
-    CI->getDiagnostics(), "PikoPipe",
-    CI->getHeaderSearchOpts(), CI->getPreprocessorOpts(),
-    CI->getCodeGenOpts(), ctx);
-
-  clang::ParseAST(CI->getPreprocessor(), llvmCodeGen, CI->getASTContext());
-
-  if(CI->getDiagnostics().hasErrorOccurred()) {
+  std::unique_ptr<Compilation> C(TheDriver.BuildCompilation(Args));
+  if (!C) {
+    llvm::errs() << "Compilation has problem building it\n";
     return false;
   }
 
-  this->module = llvmCodeGen->GetModule();
+  const driver::JobList &Jobs = C->getJobs();
+  if (Jobs.size() != 1 || !isa<driver::Command>(*Jobs.begin())) {
+    SmallString<256> Msg;
+    llvm::raw_svector_ostream OS(Msg);
+    Jobs.Print(OS, "; ", true);
+    Diags.Report(diag::err_fe_expected_compiler_job) << OS.str();
+    return false;
+  }
+
+  const driver::Command &Cmd = cast<driver::Command>(*Jobs.begin());
+  if (llvm::StringRef(Cmd.getCreator().getName()) != "clang") {
+    Diags.Report(diag::err_fe_expected_clang_command);
+    return false;
+  }
+
+  // Initialize a compiler invocation object from the clang (-cc1) arguments.
+  const driver::ArgStringList &CCArgs = Cmd.getArguments();
+  Cmd.Print(llvm::errs(), "\n", false);
+  llvm::errs() << "nArgs=" << CCArgs.size() << "\n";
+  llvm::errs() << "firstArg=" <<
+    const_cast<const char **>(CCArgs.data())[0] << "\n";
+  llvm::errs() << "lastArg=" <<
+    const_cast<const char **>(CCArgs.data())[CCArgs.size() - 1] << "\n";
+  std::unique_ptr<CompilerInvocation> CI(new CompilerInvocation);
+  CompilerInvocation::CreateFromArgs(*CI,
+                                     const_cast<const char **>(CCArgs.data()),
+                                     const_cast<const char **>(CCArgs.data()) +
+                                       CCArgs.size(),
+                                     Diags);
+
+  // Show the invocation, with -v.
+  if (CI->getHeaderSearchOpts().Verbose) {
+    llvm::errs() << "clang invocation:\n";
+    Jobs.Print(llvm::errs(), "\n", true);
+    llvm::errs() << "\n";
+  }
+
+  // FIXME: This is copied from cc1_main.cpp; simplify and eliminate.
+
+  // Create a compiler instance to handle the actual work.
+  CompilerInstance Clang;
+  Clang.setInvocation(std::move(CI));
+
+  // Create the compilers actual diagnostics engine.
+  Clang.createDiagnostics();
+  if (!Clang.hasDiagnostics())
+    return false;
+
+  llvm::LLVMContext& ctx = GlobalContext;
+
+  // Create and execute the frontend to generate an LLVM bitcode module.
+  std::unique_ptr<CodeGenAction> Act(new EmitLLVMOnlyAction(&ctx));
+  if (!Clang.ExecuteAction(*Act))
+    return false;
+
+  if(Clang.getDiagnostics().hasErrorOccurred()) {
+    llvm::errs() << "Parsing erros...\n";
+    return false;
+  }
+
+  llvm::errs() << "Parsing seems fine...\n";
+  this->module = Act->takeModule().get();
 
   return true;
 }

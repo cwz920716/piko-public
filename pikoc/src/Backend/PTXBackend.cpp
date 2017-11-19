@@ -14,6 +14,8 @@
 bool PTXBackend::emitDefines(std::ostream& outfile) {
   outfile << "#define __PIKOC_PTX__\n\n";
 
+  // outfile << "#include <cuda.h>\n\n";
+
   outfile << "// device-side members\n";
   outfile << "#define __PIKO_DEVICE_MEMBERS__ \\\n";
   outfile << "  CUdevice    cuDevice; \\\n";
