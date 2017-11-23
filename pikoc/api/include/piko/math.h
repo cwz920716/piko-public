@@ -219,7 +219,7 @@ int imin(int a, int b) {return a<b?a:b;}
 
 #if defined(__PIKOC_PTX__)
 inline void membar_bin() { asm __volatile__("membar.cta;");}
-void __syncthreads();
+extern "C" void __syncthreads();
 inline void BinSynchronize() { __syncthreads(); }
 inline int   				max_max							(int a, int b, int c)										{ int v; asm __volatile__("vmax.s32.s32.s32.max %0, %1, %2, %3;" : "=r"(v) : "r"(a), "r"(b), "r"(c)); return v; }
 inline int   				min_min							(int a, int b, int c)										{ int v; asm __volatile__("vmin.s32.s32.s32.min %0, %1, %2, %3;" : "=r"(v) : "r"(a), "r"(b), "r"(c)); return v; }

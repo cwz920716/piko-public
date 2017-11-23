@@ -39,13 +39,13 @@ PikocOptions PikocOptions::parseOptions(int argc, char *argv[]) {
   options.Argc = argc;
   options.Argv = argv;
 
-  options.includeDirs.push_back("/usr/lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0");
-  options.includeDirs.push_back("/usr/lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/x86_64-linux-gnu/c++/5.4.0");
-  options.includeDirs.push_back("/usr/lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/backward");
-  options.includeDirs.push_back("/usr/local/include");
-  options.includeDirs.push_back("/include");
-  options.includeDirs.push_back("/usr/include");
-  options.includeDirs.push_back("/usr/include/x86_64-linux-gnu");
+  // options.includeDirs.push_back("/usr/lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0");
+  // options.includeDirs.push_back("/usr/lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/x86_64-linux-gnu/c++/5.4.0");
+  // options.includeDirs.push_back("/usr/lib/gcc/x86_64-linux-gnu/5.4.0/../../../../include/c++/5.4.0/backward");
+  // options.includeDirs.push_back("/usr/local/include");
+  // options.includeDirs.push_back("/include");
+  // options.includeDirs.push_back("/usr/include");
+  // options.includeDirs.push_back("/usr/include/x86_64-linux-gnu");
 
   int i;
   for(i = 1; i < argc; ++i) {
@@ -117,7 +117,9 @@ PikocOptions PikocOptions::parseOptions(int argc, char *argv[]) {
 
   options.osString = OS_STRING;
 
+  options.clangDir = CLANG_PATH;
   options.clangResourceDir = CLANG_RESOURCE_PATH;
+  options.cudaDir = CUDA_PATH;
   options.cudaIncludeDir = CUDA_INCLUDE_PATH;
   options.pikoIncludeDir = PIKOC_API_PATH;
   options.inFileName = argv[i];

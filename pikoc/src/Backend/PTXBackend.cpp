@@ -1,15 +1,76 @@
 #include "Backend/PTXBackend.hpp"
 
+// #include "llvm/Bitcode/BitcodeReader.h"
+// #include "llvm/Bitcode/BitcodeWriter.h"
+#include "llvm/Bitcode/ReaderWriter.h"
 #include "llvm/IR/Instructions.h"
 #include "llvm/IR/Constants.h"
 #include "llvm/IR/Module.h"
 #include "llvm/IR/TypeBuilder.h"
 #include "llvm/IR/PassManager.h"
+#include "llvm/Support/FileSystem.h"
 #include "llvm/Support/raw_ostream.h"
+#include "llvm/Support/ToolOutputFile.h"
 #include "llvm/Transforms/IPO/PassManagerBuilder.h"
 #include "llvm/Transforms/IPO.h"
 
 #include <string>
+#include <stdio.h>
+#include <string.h>
+#include <sys/stat.h>
+
+typedef struct stat Stat;
+
+typedef enum {
+  PTXGEN_SUCCESS                    = 0x0000,
+  PTXGEN_FILE_IO_ERROR              = 0x0001,
+  PTXGEN_BAD_ALLOC_ERROR            = 0x0002,
+  PTXGEN_LIBNVVM_COMPILATION_ERROR  = 0x0004,
+  PTXGEN_LIBNVVM_ERROR              = 0x0008,
+  PTXGEN_INVALID_USAGE              = 0x0010,
+  PTXGEN_LIBNVVM_HOME_UNDEFINED     = 0x0020,
+  PTXGEN_LIBNVVM_VERIFICATION_ERROR = 0x0040
+} PTXGENStatus;
+
+static PTXGENStatus addFileToProgram(const char *filename, nvvmProgram prog) {
+  char        *buffer;
+  size_t       size;
+  Stat         fileStat;
+
+  /* Open the input file. */
+  FILE *f = fopen(filename, "rb");
+  if (f == NULL) {
+    fprintf(stderr, "Failed to open %s\n", filename);
+    return PTXGEN_FILE_IO_ERROR;
+  }
+
+  /* Allocate buffer for the input. */
+  fstat(fileno(f), &fileStat);
+  buffer = (char *) malloc(fileStat.st_size);
+  if (buffer == NULL) {
+    fprintf(stderr, "Failed to allocate memory\n");
+    return PTXGEN_BAD_ALLOC_ERROR;
+  }
+  size = fread(buffer, 1, fileStat.st_size, f);
+  if (ferror(f)) {
+    fprintf(stderr, "Failed to read %s\n", filename);
+    fclose(f);
+    free(buffer);
+    return PTXGEN_FILE_IO_ERROR;
+  }
+  fclose(f);
+
+  if (nvvmAddModuleToProgram(prog, buffer, size, filename) != NVVM_SUCCESS) {
+    fprintf(stderr,
+            "Failed to add the module %s to the compilation unit\n",
+            filename);
+    free(buffer);
+    return PTXGEN_LIBNVVM_ERROR;
+  }
+
+  free(buffer);
+  return PTXGEN_SUCCESS;
+}
 
 bool PTXBackend::emitDefines(std::ostream& outfile) {
   outfile << "#define __PIKOC_PTX__\n\n";
@@ -355,6 +416,22 @@ bool PTXBackend::emitDeviceCode(std::string filename) {
   std::string kernelPrefix = "kernel";
   std::string atomicPrefix = "__atomic_";
 
+  llvm::StringRef data_layout("e-p:64:64:64-i1:8:8-i8:8:8-i16:16:16-i32:32:32-i64:64:64-f32:32:32-f64:64:64-v16:16:16-v32:32:32-v64:64:64-v128:128:128-n16:32:64");
+  llvm::StringRef target_triple("nvptx64-nvidia-cuda");
+  module->setDataLayout(data_layout);
+  module->setTargetTriple(target_triple);
+  // module->setSourceFileName("");
+
+  for (auto &global : module->getGlobalList()) {
+    llvm::errs() << "setComdat for " << global.getName() << "\n";
+    global.setComdat(nullptr);
+  }
+
+  for (auto &func : module->getFunctionList()) {
+    llvm::errs() << "setComdat for " << func.getName() << "\n";
+    func.setComdat(nullptr);
+  }
+
   // NVVM intrinsic functions
   llvm::Function* threadIdx_x = llvm::Function::Create(
     llvm::TypeBuilder<llvm::types::i<32>(), true>::get(module->getContext()),
@@ -374,6 +451,20 @@ bool PTXBackend::emitDeviceCode(std::string filename) {
     llvm::types::ieee_float*, llvm::types::ieee_float),
     true>::get(module->getContext()),
     llvm::GlobalValue::ExternalLinkage, "llvm.nvvm.atomic.load.add.f32.p0f32", module);
+
+  // NVVM version metadata (for specifying kernels)
+  llvm::NamedMDNode* nvvmIRVersionMD =
+    module->getOrInsertNamedMetadata("nvvmir.version");
+  auto major = llvm::ValueAsMetadata::getConstant(
+                     llvm::ConstantInt::get(module->getContext(),
+                                            llvm::APInt(32, 1)));
+  auto minor = llvm::ValueAsMetadata::getConstant(
+                     llvm::ConstantInt::get(module->getContext(),
+                                            llvm::APInt(32, 3)));
+  llvm::Metadata *metas_v[] = { major, minor };
+  llvm::ArrayRef<llvm::Metadata *> metas_v_(metas_v, 2);
+  llvm::MDNode* version = llvm::MDNode::get(module->getContext(), metas_v_);
+  nvvmIRVersionMD->addOperand(version);
 
   // NVVM named metadata (for specifying kernels)
   llvm::NamedMDNode* nvvmMD =
@@ -460,7 +551,8 @@ bool PTXBackend::emitDeviceCode(std::string filename) {
 
             llvm::AtomicRMWInst* atomicInst = new llvm::AtomicRMWInst(
               op, callInst->getArgOperand(0), callInst->getArgOperand(1),
-              llvm::AtomicOrdering::Monotonic, llvm::SyncScope::System, callInst);
+              // llvm::AtomicOrdering::Monotonic, llvm::SyncScope::System, callInst);
+              llvm::AtomicOrdering::Monotonic, llvm::CrossThread, callInst);
 
             callInst->replaceAllUsesWith(atomicInst);
             callInsts.push_back(callInst);
@@ -497,7 +589,7 @@ bool PTXBackend::emitDeviceCode(std::string filename) {
   }
 
   // Add libdevice to NVVM compilation unit
-  std::string libdeviceFileName = pikocOptions.cudaIncludeDir;
+  std::string libdeviceFileName = pikocOptions.cudaDir;
   libdeviceFileName = libdeviceFileName + LIB_DEVICE_PATH;
 
   std::ifstream libdeviceIn(libdeviceFileName.c_str());
@@ -522,14 +614,22 @@ bool PTXBackend::emitDeviceCode(std::string filename) {
     return false;
   }
 
-  // Add Piko module to NVVM compilation unit
-  std::string pikoModule;
-  llvm::raw_string_ostream pikoModuleStream(pikoModule);
-  pikoModuleStream << *module;
+  // Add Piko module to NVVM compilation unit by write it to disk first
+  // std::string pikoModule;
+  // llvm::raw_string_ostream pikoModuleStream(pikoModule);
+  // pikoModuleStream << *module;
+  std::string outputFilename("pikopipe.bc");
+  std::error_code ec;
+  llvm::tool_output_file out(outputFilename, ec, llvm::sys::fs::F_None);
+  if (ec) {
+    llvm::errs() << ec.message() << '\n';
+    return 1;
+  }
 
-  if(nvvmAddModuleToProgram(program, pikoModule.c_str(),
-      pikoModule.size(), "PikoPipe") != NVVM_SUCCESS)
-  {
+  llvm::WriteBitcodeToFile(module, out.os());
+  out.keep();
+
+  if(addFileToProgram(outputFilename.c_str(), program) != PTXGEN_SUCCESS) {
     llvm::errs() << "Unable to add Piko module to NVVM compilation unit\n";
     nvvmDestroyProgram(&program);
     return false;
@@ -537,8 +637,12 @@ bool PTXBackend::emitDeviceCode(std::string filename) {
 
   // Verify NVVM compilation unit
   bool exitCompilation = false;
-  if(nvvmVerifyProgram(program, nvvmNumOptions, nvvmOptions) != NVVM_SUCCESS) {
-    llvm::errs() << "Failed to verify NVVM compilation unit\n";
+  nvvmResult res;
+  if ((res = nvvmVerifyProgram(program, nvvmNumOptions, nvvmOptions))
+       != NVVM_SUCCESS) {
+    llvm::errs() << "Error: [" << nvvmGetErrorString(res)
+                 << "] Failed to verify NVVM compilation unit\n";
+    // nvvmGetProgramLog (program, nvvmLog);
     exitCompilation = true;
   }
 
@@ -555,8 +659,10 @@ bool PTXBackend::emitDeviceCode(std::string filename) {
   }
   else {
     size_t ptxSize;
-    if(nvvmGetCompiledResultSize(program, &ptxSize) != NVVM_SUCCESS) {
-      llvm::errs() << "Failed to get the PTX output size\n";
+    if ((res = nvvmGetCompiledResultSize(program, &ptxSize))
+          != NVVM_SUCCESS) {
+      llvm::errs() << "Error: [" << nvvmGetErrorString(res)
+                   << "] Failed to get the PTX output size\n";
       exitCompilation = true;
     }
     else {
@@ -989,6 +1095,10 @@ bool PTXBackend::printWarningsAndErrorsNVVM(nvvmProgram& program) {
   bool exitCompilation = false;
   size_t nvvmLogSize;
   char* nvvmLog;
+  int major, minor;
+  nvvmVersion (&major, &minor);
+  llvm::errs() << "NVVM IR Version: " << major << "." << minor << "\n";
+
   if(nvvmGetProgramLogSize(program, &nvvmLogSize) != NVVM_SUCCESS) {
     llvm::errs() << "Failed to get NVVM compilation log size\n";
     exitCompilation = true;

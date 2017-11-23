@@ -22,7 +22,9 @@ public:
   std::string osString;
 
   std::string workingDir;
+  std::string clangDir;
   std::string clangResourceDir;
+  std::string cudaDir;
   std::string cudaIncludeDir;
   std::string pikoIncludeDir;
   std::string inFileName;

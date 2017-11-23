@@ -1,5 +1,11 @@
 #include "Backend/PikoBackend.hpp"
 
+#include <ios>
+#include <iostream>
+#include <fstream>
+#include <cstdio>      /* printf */
+#include <stdlib.h>     /* system, NULL, EXIT_FAILURE */
+
 #include "clang/CodeGen/CodeGenAction.h"
 #include "clang/Basic/DiagnosticOptions.h"
 #include "clang/Driver/Compilation.h"
@@ -14,23 +20,97 @@
 #include "llvm/IR/LLVMContext.h"
 #include "llvm/IR/PassManager.h"
 #include "llvm/IR/LegacyPassManager.h"
-#include "llvm/Transforms/IPO/AlwaysInliner.h"
+#include "llvm/IRReader/IRReader.h"
+// #include "llvm/Transforms/IPO/AlwaysInliner.h"
 #include "llvm/Transforms/IPO/PassManagerBuilder.h"
 #include "llvm/Transforms/IPO.h"
 #include "llvm/IR/Module.h"
 #include "llvm/Support/FileSystem.h"
 #include "llvm/Support/Host.h"
 #include "llvm/Support/ManagedStatic.h"
+#include "llvm/Support/MemoryBuffer.h"
 #include "llvm/Support/Path.h"
 #include "llvm/Support/TargetSelect.h"
 #include "llvm/Support/raw_ostream.h"
+#include "llvm/Support/SourceMgr.h"
 
 using namespace clang;
 using namespace clang::driver;
 
+llvm::Module *LoadModule(llvm::StringRef bitcode, llvm::LLVMContext &context) {
+  // parse it
+  llvm::SMDiagnostic error;
+  std::unique_ptr<llvm::Module> module =
+    llvm::parseIRFile(bitcode, error, context);
+
+  if(!module) {
+    std::string what;
+    llvm::raw_string_ostream os(what);
+    error.print("error after ParseIR()", os);
+    std::cerr << what;
+  }
+
+  return module.release();
+}
+
+std::string Concat(std::vector<std::string> &inputs) {
+  if (inputs.size() == 0) {
+    return "";
+  }
+
+  std::string res = inputs[0];
+  for (int i = 1; i < inputs.size(); i++) {
+    res += " " + inputs[i];
+  }
+  return res;
+}
+
+bool PikoBackend::createLLVMModuleBySystem() {
+  std::vector<std::string> Args;
+  std::string Path = pikocOptions.clangDir + "/clang++";
+  Args.push_back(Path);
+  Args.push_back("-D__PIKOC__");
+  Args.push_back("-D__PIKOC_DEVICE__");
+  Args.push_back("-c");
+  Args.push_back("-emit-llvm");
+
+  std::string include("-I");
+  auto include_cwd = include + pikocOptions.workingDir;
+  // llvm::errs() << pikocOptions.workingDir.c_str() << "\n";
+  Args.push_back(include_cwd.c_str());
+  auto include_piko = include + pikocOptions.pikoIncludeDir;
+  // llvm::errs() << pikocOptions.pikoIncludeDir.c_str() << "\n";
+  Args.push_back(include_piko.c_str());
+  auto include_res = include + pikocOptions.clangResourceDir;
+  // llvm::errs() << pikocOptions.clangResourceDir.c_str() << "\n";
+  Args.push_back(include_res.c_str());
+  for(int i = 0; i < pikocOptions.includeDirs.size(); ++i) {
+    Args.push_back(include + pikocOptions.includeDirs[i]);
+  }
+  Args.push_back("-o");
+
+  std::string bitcodeName = pikocOptions.inFileName + ".bc";
+  Args.push_back(bitcodeName);
+  Args.push_back(pikocOptions.inFileName);
+
+  auto Command = Concat(Args);
+  llvm::errs() << "Invoke: " << Command << "\n";
+  system(Command.c_str());
+
+  // std::ifstream bitcode("dummy.bc", std::ios_base::binary);
+  this->module = LoadModule(bitcodeName, GlobalContext);
+
+  if (this->module == nullptr) {
+    llvm::errs() << "parsing errors.\n";
+    return false;
+  }
+  return true;
+}
+
 bool PikoBackend::createLLVMModule() {
   // void *MainAddr = (void*) (intptr_t) GetExecutablePath;
-  std::string Path = "/usr/local/bin/clang";
+  // std::string Path = pikocOptions.workingDir;
+  std::string Path = "/home/cwz/llvm-root/build-5.0.0/bin/clang++";
   llvm::errs() << "Path=" << Path << "\n";
 
   llvm::IntrusiveRefCntPtr<DiagnosticOptions> DiagOpts = new DiagnosticOptions();
@@ -55,6 +135,7 @@ bool PikoBackend::createLLVMModule() {
   Args.push_back("-D__PIKOC_DEVICE__");
   Args.push_back("-c");
   Args.push_back("-emit-llvm");
+  Args.push_back("-xc++");
 
   std::string include("-I");
   auto include_cwd = include + pikocOptions.workingDir;
@@ -62,7 +143,7 @@ bool PikoBackend::createLLVMModule() {
   Args.push_back(include_cwd.c_str());
   auto include_piko = include + pikocOptions.pikoIncludeDir;
   // llvm::errs() << pikocOptions.pikoIncludeDir.c_str() << "\n";
-  Args.push_back(include_piko.c_str());
+  // Args.push_back(include_piko.c_str());
   // args.push_back("-I");
   auto include_res = include + pikocOptions.clangResourceDir;
   // llvm::errs() << pikocOptions.clangResourceDir.c_str() << "\n";
@@ -120,7 +201,9 @@ bool PikoBackend::createLLVMModule() {
 
   // Create a compiler instance to handle the actual work.
   CompilerInstance Clang;
-  Clang.setInvocation(std::move(CI));
+  // Clang.setInvocation(std::move(CI));
+  Clang.setInvocation(CI.get());
+  Clang.getHeaderSearchOpts().ResourceDir = pikocOptions.clangResourceDir;
 
   // Create the compilers actual diagnostics engine.
   Clang.createDiagnostics();
@@ -130,12 +213,15 @@ bool PikoBackend::createLLVMModule() {
   llvm::LLVMContext& ctx = GlobalContext;
 
   // Create and execute the frontend to generate an LLVM bitcode module.
-  std::unique_ptr<CodeGenAction> Act(new EmitLLVMOnlyAction(&ctx));
-  if (!Clang.ExecuteAction(*Act))
+  llvm::errs() << "Codegen...\n";
+  std::unique_ptr<CodeGenAction> Act(new EmitLLVMOnlyAction());
+  if (!Clang.ExecuteAction(*Act)) {
+    llvm::errs() << "Parsing erros...\n";
     return false;
+  }
 
   if(Clang.getDiagnostics().hasErrorOccurred()) {
-    llvm::errs() << "Parsing erros...\n";
+    llvm::errs() << "Parsing erros in diagnostics...\n";
     return false;
   }
 
@@ -152,16 +238,17 @@ bool PikoBackend::optimizeLLVMModule(int optLevel) {
 
   passBuilder.OptLevel = optLevel;
 
-  if(pikocOptions.inlineDevice)
-    passBuilder.Inliner = llvm::createAlwaysInlinerLegacyPass();
+  if(pikocOptions.inlineDevice) {
+    // passBuilder.Inliner = llvm::createAlwaysInlinerLegacyPass();
+    passBuilder.Inliner = llvm::createAlwaysInlinerPass();
+  }
 
   passBuilder.populateFunctionPassManager(fnPassMgr);
   passBuilder.populateModulePassManager(modPassMgr);
 
   fnPassMgr.doInitialization();
   for(llvm::Module::iterator ii = module->begin(), ie = module->end();
-      ii != ie; ++ii)
-  {
+      ii != ie; ++ii) {
     fnPassMgr.run(*ii);
   }
 

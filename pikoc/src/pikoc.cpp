@@ -438,7 +438,7 @@ int main(int argc, char *argv[]) {
     PressEnterToContinue();
 
   // Create LLVM module in backend
-  if(!backend->createLLVMModule()) {
+  if(!backend->createLLVMModuleBySystem()) {
     llvm::errs() << "Unable to create LLVM module for backend code generation\n";
     exit(1);
   }

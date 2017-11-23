@@ -34,7 +34,7 @@ public:
   virtual bool emitDestroyFunc(std::ostream& outfile) override;
 
 protected:
-  virtual std::string getTargetTriple() override { return "nvptx64-nvidia"; }
+  virtual std::string getTargetTriple() override { return "nvptx64-nvidia-cuda"; }
 
 private:
   void writeKernelFunctionFetch(int kernelID, bool bAllocate, std::ostream& outfile);

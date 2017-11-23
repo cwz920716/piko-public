@@ -26,6 +26,7 @@ public:
   virtual ~PikoBackend() {}
 
   virtual bool createLLVMModule();
+  virtual bool createLLVMModuleBySystem();
   virtual bool optimizeLLVMModule(int optLevel);
 
   // TODO(wcui) what's the purpose of emits?
