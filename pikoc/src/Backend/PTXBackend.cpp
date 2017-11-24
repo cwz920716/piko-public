@@ -445,6 +445,10 @@ bool PTXBackend::emitDeviceCode(std::string filename) {
     llvm::TypeBuilder<llvm::types::i<32>(), true>::get(module->getContext()),
     llvm::GlobalValue::ExternalLinkage, "llvm.nvvm.read.ptx.sreg.ntid.x", module);
 
+  llvm::Function* barrier = llvm::Function::Create(
+    llvm::TypeBuilder<void(), true>::get(module->getContext()),
+    llvm::GlobalValue::ExternalLinkage, "llvm.nvvm.barrier0", module);
+
   // NVVM atomic intrinsic functions
   llvm::Function* atomicAddFloat = llvm::Function::Create(
     llvm::TypeBuilder<llvm::types::ieee_float(
@@ -460,7 +464,7 @@ bool PTXBackend::emitDeviceCode(std::string filename) {
                                             llvm::APInt(32, 1)));
   auto minor = llvm::ValueAsMetadata::getConstant(
                      llvm::ConstantInt::get(module->getContext(),
-                                            llvm::APInt(32, 4)));
+                                            llvm::APInt(32, 3)));
   llvm::Metadata *metas_v[] = { major, minor };
   llvm::ArrayRef<llvm::Metadata *> metas_v_(metas_v, 2);
   llvm::MDNode* version = llvm::MDNode::get(module->getContext(), metas_v_);
@@ -484,6 +488,9 @@ bool PTXBackend::emitDeviceCode(std::string filename) {
     }
     else if(name == "blockDim_x") {
       ii->replaceAllUsesWith(blockDim_x);
+    }
+    else if(name == "__syncthreads") {
+      ii->replaceAllUsesWith(barrier);
     }
     else if(name == "__atomic_nvvm_addFloat__") {
       ii->replaceAllUsesWith(atomicAddFloat);
@@ -589,7 +596,7 @@ bool PTXBackend::emitDeviceCode(std::string filename) {
   }
 
   // Add libdevice to NVVM compilation unit
-  std::string libdeviceFileName = pikocOptions.pikocDir;
+  std::string libdeviceFileName = pikocOptions.cudaDir;
   libdeviceFileName = libdeviceFileName + LIB_DEVICE_PATH;
 /*
   std::ifstream libdeviceIn(libdeviceFileName.c_str());
@@ -792,7 +799,7 @@ bool PTXBackend::emitAllocateFunc(std::ostream& outfile) {
 
   outfile << "  cuCtxCreate(&cuContext, 0, cuDevice);\n";
 
-  outfile << "  CUDACHECK(cuModuleLoad(&cuModule, \"./__pikoCompiledPipe.ptx\"));\n";
+  outfile << "  CUDACHECK(cuModuleLoad(&cuModule, \"__pikoCompiledPipe.ptx\"));\n";
 
   outfile << "  // Increase the GPU stack size\n";
   outfile << "  CUDACHECK(cuCtxSetLimit(CU_LIMIT_STACK_SIZE, 4096));\n";

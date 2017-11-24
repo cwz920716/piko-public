@@ -2,8 +2,8 @@
 
 #define CLANG_PATH "/home/cwz/llvm-root/build-3.8.0/bin"
 #define CLANG_RESOURCE_PATH "/home/cwz/llvm-root/build-3.8.0/lib/clang/3.8.0/include"
-#define CUDA_PATH "/usr/local/cuda"
-#define CUDA_INCLUDE_PATH "/usr/local/cuda/include"
+#define CUDA_PATH "/usr/local/cuda-8.0"
+#define CUDA_INCLUDE_PATH "/usr/local/cuda-8.0/include"
 #define PIKOC_PATH "/home/cwz/piko-public/pikoc"
 #define PIKOC_API_PATH "/home/cwz/piko-public/pikoc/api/include"
 
