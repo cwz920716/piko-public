@@ -2,7 +2,7 @@
 
 CUDA_PATH = /usr/local/cuda
 LLVM_INSTALL_PATH = /home/cwz/llvm-root/build-3.8.0
-LLVM_SRC_PATH = /home/cwz/llvm-root/llvm-3.8.0
+LLVM_SRC_PATH = /home/cwz/llvm-root/llvm-3.8.0.src
 
 NVVM_PATH = $(CUDA_PATH)/nvvm
 
@@ -59,14 +59,18 @@ vectorize \
 LLVM_CONFIG_COMP = $(LLVM_BIN_PATH)/llvm-config --cxxflags
 LLVM_CONFIG_LINK = $(LLVM_BIN_PATH)/llvm-config --ldflags \
                                         --libs $(LLVM_LIBS)
-CLANG_BUILD_FLAGS = -I$(LLVM_SRC_PATH)/tools/clang/include \
+CLANG_BUILD_FLAGS = -D_GLIBCXX_USE_CXX11_ABI=0 -I$(LLVM_SRC_PATH)/tools/clang/include \
+                    -I$(LLVM_INSTALL_PATH)/tools/clang/include \
                     -I$(LLVM_INSTALL_PATH)/include
 
 CLANGLIBS = \
-  -lclangFrontendTool -lclangFrontend -lclangDriver -lclangSerialization -lclangCodeGen \
-  -lclangParse -lclangSema -lclangStaticAnalyzerFrontend -lclangStaticAnalyzerCheckers \
-  -lclangStaticAnalyzerCore -lclangAnalysis -lclangARCMigrate -lclangRewriteFrontend -lclangRewrite -lclangRewriteFrontend \
-  -lclangEdit -lclangAST -lclangLex -lclangBasic
+  -lclangFrontendTool -lclangFrontend -lclangDriver \
+  -lclangSerialization -lclangCodeGen -lclangParse \
+  -lclangSema -lclangStaticAnalyzerFrontend \
+  -lclangStaticAnalyzerCheckers -lclangStaticAnalyzerCore \
+  -lclangAnalysis -lclangARCMigrate \
+  -lclangEdit -lclangAST -lclangLex -lclangBasic \
+	-lclangTooling
 
 # Other Clang libraries
 #-lclangRewriteCore -lclangRewriteFrontend -lclangRewrite 

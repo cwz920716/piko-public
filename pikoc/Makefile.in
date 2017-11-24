@@ -46,7 +46,8 @@ vectorize \
 LLVM_CONFIG_COMP = $(LLVM_BIN_PATH)/llvm-config --cxxflags
 LLVM_CONFIG_LINK = $(LLVM_BIN_PATH)/llvm-config --ldflags \
                                         --libs $(LLVM_LIBS)
-CLANG_BUILD_FLAGS = -I$(LLVM_SRC_PATH)/tools/clang/include \
+CLANG_BUILD_FLAGS = -D_GLIBCXX_USE_CXX11_ABI=0 -I$(LLVM_SRC_PATH)/tools/clang/include \
+                    -I$(LLVM_INSTALL_PATH)/tools/clang/include \
                     -I$(LLVM_INSTALL_PATH)/include
 
 CLANGLIBS = \

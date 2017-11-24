@@ -26,6 +26,7 @@ public:
   std::string clangResourceDir;
   std::string cudaDir;
   std::string cudaIncludeDir;
+  std::string pikocDir;
   std::string pikoIncludeDir;
   std::string inFileName;
 
@@ -37,7 +38,7 @@ public:
     target = pikoc::PTX;
     optimize = false;
     enableTimers = false;
-    dumpIR = true;
+    dumpIR = false;
     edit = false;
     inlineDevice = false;
     displayGrid = false;

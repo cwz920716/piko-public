@@ -64,6 +64,17 @@ echo "#define CLANG_PATH" \"$PIKOC_LLVM_PATH"/bin"\" >> src/PikocOptions.in
 echo "#define CLANG_RESOURCE_PATH" \"$PIKOC_LLVM_PATH"/lib/clang/3.8.0/include"\" >> src/PikocOptions.in
 echo "#define CUDA_PATH" \"$PIKOC_CUDA_PATH\" >> src/PikocOptions.in
 echo "#define CUDA_INCLUDE_PATH" \"$PIKOC_CUDA_PATH"/include"\" >> src/PikocOptions.in
+echo -n "#define PIKOC_PATH \"" >> src/PikocOptions.in
+if [ $OS == "Windows" ]
+then
+	pwd | cut -c 2-2 | tr -d '\n' >> src/PikocOptions.in
+	echo -n ":/" >> src/PikocOptions.in
+	pwd | cut -c 4- | tr -d '\n' >> src/PikocOptions.in
+else
+	pwd | tr -d '\n' >> src/PikocOptions.in
+fi
+echo \" >> src/PikocOptions.in
+
 echo -n "#define PIKOC_API_PATH \"" >> src/PikocOptions.in
 cd api/include
 if [ $OS == "Windows" ]

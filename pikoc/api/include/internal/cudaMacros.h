@@ -14,6 +14,7 @@
       std::cerr << "CUDA Error" << std::endl;\
       std::string cudaMessage = getCudaDrvErrorString(cudaStatus);\
       std::cerr << "\t" << #command << " failed with error \'" << cudaMessage.c_str() << "\'" << std::endl;\
+      std::cerr << "\t" << "Error Code: \'" << cudaStatus << "\'" << std::endl;\
       assert(cudaStatus == CUDA_SUCCESS);\
       exit(-1);\
     }\

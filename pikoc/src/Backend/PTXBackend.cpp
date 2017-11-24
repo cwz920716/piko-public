@@ -460,7 +460,7 @@ bool PTXBackend::emitDeviceCode(std::string filename) {
                                             llvm::APInt(32, 1)));
   auto minor = llvm::ValueAsMetadata::getConstant(
                      llvm::ConstantInt::get(module->getContext(),
-                                            llvm::APInt(32, 3)));
+                                            llvm::APInt(32, 4)));
   llvm::Metadata *metas_v[] = { major, minor };
   llvm::ArrayRef<llvm::Metadata *> metas_v_(metas_v, 2);
   llvm::MDNode* version = llvm::MDNode::get(module->getContext(), metas_v_);
@@ -579,8 +579,8 @@ bool PTXBackend::emitDeviceCode(std::string filename) {
 
   // Backend code generation to PTX
   // TODO allow for backend options
-  int nvvmNumOptions = 2;
-  const char* nvvmOptions[] = {"-prec-sqrt=0", "-prec-div=0"};
+  int nvvmNumOptions = 3;
+  const char* nvvmOptions[] = {"-arch=compute_35", "-prec-sqrt=0", "-prec-div=0"};
   nvvmProgram program;
 
   if(nvvmCreateProgram(&program) != NVVM_SUCCESS) {
@@ -589,9 +589,9 @@ bool PTXBackend::emitDeviceCode(std::string filename) {
   }
 
   // Add libdevice to NVVM compilation unit
-  std::string libdeviceFileName = pikocOptions.cudaDir;
+  std::string libdeviceFileName = pikocOptions.pikocDir;
   libdeviceFileName = libdeviceFileName + LIB_DEVICE_PATH;
-
+/*
   std::ifstream libdeviceIn(libdeviceFileName.c_str());
   if(!libdeviceIn.is_open()) {
     llvm::errs() << "Unable to open libdevice file at: " << libdeviceFileName << "\n";
@@ -605,9 +605,8 @@ bool PTXBackend::emitDeviceCode(std::string filename) {
   libdeviceIn.seekg(0, std::ios::beg);
   libdeviceIn.read(&libdevice[0], libdevice.size());
   libdeviceIn.close();
-
-  if(nvvmAddModuleToProgram(program, libdevice.c_str(),
-      libdevice.size(), "libdevice") != NVVM_SUCCESS)
+*/
+  if(addFileToProgram(libdeviceFileName.c_str(), program) != PTXGEN_SUCCESS)
   {
     llvm::errs() << "Unable to add libdevice module to NVVM compilation unit\n";
     nvvmDestroyProgram(&program);
@@ -793,7 +792,7 @@ bool PTXBackend::emitAllocateFunc(std::ostream& outfile) {
 
   outfile << "  cuCtxCreate(&cuContext, 0, cuDevice);\n";
 
-  outfile << "  CUDACHECK(cuModuleLoad(&cuModule, \"__pikoCompiledPipe.ptx\"));\n";
+  outfile << "  CUDACHECK(cuModuleLoad(&cuModule, \"./__pikoCompiledPipe.ptx\"));\n";
 
   outfile << "  // Increase the GPU stack size\n";
   outfile << "  CUDACHECK(cuCtxSetLimit(CU_LIMIT_STACK_SIZE, 4096));\n";

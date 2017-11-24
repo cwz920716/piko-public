@@ -121,6 +121,7 @@ PikocOptions PikocOptions::parseOptions(int argc, char *argv[]) {
   options.clangResourceDir = CLANG_RESOURCE_PATH;
   options.cudaDir = CUDA_PATH;
   options.cudaIncludeDir = CUDA_INCLUDE_PATH;
+  options.pikocDir = PIKOC_PATH;
   options.pikoIncludeDir = PIKOC_API_PATH;
   options.inFileName = argv[i];
 
