@@ -19,9 +19,30 @@
 #include <string.h>
 #include <sys/stat.h>
 
+#define LIBNVVM_HOME /usr/local/cuda/nvvm
+#define LIBDEVICE_MAJOR_VERSION 1
+#define LIBDEVICE_MINOR_VERSION 0
+
+/* Two levels of indirection to stringify LIBDEVICE_MAJOR_VERSION and
+ * LIBDEVICE_MINOR_VERSION correctly. */
+#define getLibDeviceNameForArch(ARCH)                 \
+  _getLibDeviceNameForArch(ARCH,                      \
+                           LIBDEVICE_MAJOR_VERSION,   \
+                           LIBDEVICE_MINOR_VERSION)
+#define _getLibDeviceNameForArch(ARCH, MAJOR, MINOR)  \
+  __getLibDeviceNameForArch(ARCH, MAJOR, MINOR)
+#define __getLibDeviceNameForArch(ARCH, MAJOR, MINOR) \
+  ("/libdevice/libdevice.compute_" #ARCH "." #MAJOR #MINOR ".bc")
+
+#define getLibnvvmHome _getLibnvvmHome(LIBNVVM_HOME)
+#define _getLibnvvmHome(NVVM_HOME) __getLibnvvmHome(NVVM_HOME)
+#define __getLibnvvmHome(NVVM_HOME) (#NVVM_HOME)
+
+extern "C" {
+
 typedef struct stat Stat;
 
-typedef enum {
+enum PTXGENStatus {
   PTXGEN_SUCCESS                    = 0x0000,
   PTXGEN_FILE_IO_ERROR              = 0x0001,
   PTXGEN_BAD_ALLOC_ERROR            = 0x0002,
@@ -30,7 +51,7 @@ typedef enum {
   PTXGEN_INVALID_USAGE              = 0x0010,
   PTXGEN_LIBNVVM_HOME_UNDEFINED     = 0x0020,
   PTXGEN_LIBNVVM_VERIFICATION_ERROR = 0x0040
-} PTXGENStatus;
+};
 
 static PTXGENStatus addFileToProgram(const char *filename, nvvmProgram prog) {
   char        *buffer;
@@ -71,6 +92,165 @@ static PTXGENStatus addFileToProgram(const char *filename, nvvmProgram prog) {
   free(buffer);
   return PTXGEN_SUCCESS;
 }
+
+static PTXGENStatus getLibDeviceName(int computeArch, char **buffer) {
+  const char *libnvvmPath = getLibnvvmHome;
+  const char *libdevice   = NULL;
+
+  if (libnvvmPath == NULL) {
+    fprintf(stderr, "The environment variable LIBNVVM_HOME undefined\n");
+    return PTXGEN_LIBNVVM_HOME_UNDEFINED;
+  }
+
+  /* Use libdevice for compute_20, if the target is not compute_20, compute_30,
+   * or compute_35. */
+  switch (computeArch) {
+  case 30:
+    libdevice = getLibDeviceNameForArch(30);
+    break;
+  case 35:
+    libdevice = getLibDeviceNameForArch(35);
+    break;
+  default:
+    libdevice = getLibDeviceNameForArch(20);
+    break;
+  }
+
+  *buffer = (char *) malloc(strlen(libnvvmPath) + strlen(libdevice) + 1);
+  if (*buffer == NULL) {
+    fprintf(stderr, "Failed to allocate memory\n");
+    return PTXGEN_BAD_ALLOC_ERROR;
+  }
+
+  /* Concatenate libnvvmPath and name. */
+  *buffer = strcat(strcpy(*buffer, libnvvmPath), libdevice);
+
+  return PTXGEN_SUCCESS;
+}
+
+int generatePTX(int numOptions,  const char **options,
+                int numFilenames, const char **filenames,
+                int computeArch, char **ptxOut) {
+  int status;
+  nvvmProgram  prog;
+  char        *libDeviceName;
+  int          i;
+
+  /* Create the compiliation unit. */
+  if (nvvmCreateProgram(&prog) != NVVM_SUCCESS) {
+    fprintf(stderr, "Failed to create the compilation unit\n");
+    return PTXGEN_LIBNVVM_ERROR;
+  }
+
+  /* Add libdevice. */
+  status = getLibDeviceName(computeArch, &libDeviceName);
+  if (status != PTXGEN_SUCCESS) {
+    nvvmDestroyProgram(&prog);
+    return status;
+  }
+  status = addFileToProgram(libDeviceName, prog);
+  free(libDeviceName);
+  if (status != PTXGEN_SUCCESS) {
+    nvvmDestroyProgram(&prog);
+    return status;
+  }
+
+  /* Add the module to the compilation unit. */
+  for (i = 0; i < numFilenames; ++i) {
+    status = addFileToProgram(filenames[i], prog);
+    if (status != PTXGEN_SUCCESS) {
+      nvvmDestroyProgram(&prog);
+      return status;
+    }
+  }
+
+  /* Verify the compilation unit. */
+  if (nvvmVerifyProgram(prog, numOptions, options) != NVVM_SUCCESS) {
+    fprintf(stderr, "Failed to verify the compilation unit\n");
+    status |= PTXGEN_LIBNVVM_VERIFICATION_ERROR;
+  }
+
+  /* Print warnings and errors. */
+  {
+    size_t logSize;
+    char  *log;
+    if (nvvmGetProgramLogSize(prog, &logSize) != NVVM_SUCCESS) {
+      fprintf(stderr, "Failed to get the compilation log size\n");
+      status |= PTXGEN_LIBNVVM_ERROR;
+    } else {
+      log = (char *) malloc(logSize);
+      if (log == NULL) {
+        fprintf(stderr, "Failed to allocate memory\n");
+        status |= PTXGEN_BAD_ALLOC_ERROR;
+      } else if (nvvmGetProgramLog(prog, log) != NVVM_SUCCESS) {
+        fprintf(stderr, "Failed to get the compilation log\n");
+        status |= PTXGEN_LIBNVVM_ERROR;
+      } else {
+        fprintf(stderr, "%s\n", log);
+      }
+      free(log);
+    }
+  }
+
+  if (status & PTXGEN_LIBNVVM_VERIFICATION_ERROR) {
+    nvvmDestroyProgram(&prog);
+    return status;
+  }
+  
+  /* Compile the compilation unit. */
+  if (nvvmCompileProgram(prog, numOptions, options) != NVVM_SUCCESS) {
+    fprintf(stderr, "Failed to generate PTX from the compilation unit\n");
+    status |= PTXGEN_LIBNVVM_COMPILATION_ERROR;
+  } else {
+    size_t ptxSize;
+    char  *ptx;
+    if (nvvmGetCompiledResultSize(prog, &ptxSize) != NVVM_SUCCESS) {
+      fprintf(stderr, "Failed to get the PTX output size\n");
+      status |= PTXGEN_LIBNVVM_ERROR;
+    } else {
+      ptx = (char *) malloc(ptxSize);
+      if (ptx == NULL) {
+        fprintf(stderr, "Failed to allocate memory\n");
+        status |= PTXGEN_BAD_ALLOC_ERROR;
+      } else if (nvvmGetCompiledResult(prog, ptx) != NVVM_SUCCESS) {
+        fprintf(stderr, "Failed to get the PTX output\n");
+        status |= PTXGEN_LIBNVVM_ERROR;
+      } else {
+        fprintf(stdout, "%s\n", ptx);
+        *ptxOut = ptx;
+      }
+    }
+  }
+
+  /* Print warnings and errors. */
+  {
+    size_t logSize;
+    char  *log;
+    if (nvvmGetProgramLogSize(prog, &logSize) != NVVM_SUCCESS) {
+      fprintf(stderr, "Failed to get the compilation log size\n");
+      status |= PTXGEN_LIBNVVM_ERROR;
+    } else {
+      log = (char *) malloc(logSize);
+      if (log == NULL) {
+        fprintf(stderr, "Failed to allocate memory\n");
+        status |= PTXGEN_BAD_ALLOC_ERROR;
+      } else if (nvvmGetProgramLog(prog, log) != NVVM_SUCCESS) {
+        fprintf(stderr, "Failed to get the compilation log\n");
+        status |= PTXGEN_LIBNVVM_ERROR;
+      } else {
+        fprintf(stderr, "%s\n", log);
+      }
+      free(log);
+    }
+  }
+
+  /* Release the resources. */
+  nvvmDestroyProgram(&prog);
+
+  return PTXGEN_SUCCESS;
+}
+
+}  // extern "C"
 
 bool PTXBackend::emitDefines(std::ostream& outfile) {
   outfile << "#define __PIKOC_PTX__\n\n";
@@ -423,12 +603,12 @@ bool PTXBackend::emitDeviceCode(std::string filename) {
   // module->setSourceFileName("");
 
   for (auto &global : module->getGlobalList()) {
-    llvm::errs() << "setComdat for " << global.getName() << "\n";
+    // llvm::errs() << "setComdat for " << global.getName() << "\n";
     global.setComdat(nullptr);
   }
 
   for (auto &func : module->getFunctionList()) {
-    llvm::errs() << "setComdat for " << func.getName() << "\n";
+    // llvm::errs() << "setComdat for " << func.getName() << "\n";
     func.setComdat(nullptr);
   }
 
@@ -584,47 +764,9 @@ bool PTXBackend::emitDeviceCode(std::string filename) {
   if(pikocOptions.dumpIR)
     module->dump();
 
-  // Backend code generation to PTX
-  // TODO allow for backend options
-  int nvvmNumOptions = 3;
-  const char* nvvmOptions[] = {"-arch=compute_35", "-prec-sqrt=0", "-prec-div=0"};
-  nvvmProgram program;
-
-  if(nvvmCreateProgram(&program) != NVVM_SUCCESS) {
-    llvm::errs() << "Failed to create NVVM compilation unit\n";
-    return false;
-  }
-
-  // Add libdevice to NVVM compilation unit
-  std::string libdeviceFileName = pikocOptions.cudaDir;
-  libdeviceFileName = libdeviceFileName + LIB_DEVICE_PATH;
-/*
-  std::ifstream libdeviceIn(libdeviceFileName.c_str());
-  if(!libdeviceIn.is_open()) {
-    llvm::errs() << "Unable to open libdevice file at: " << libdeviceFileName << "\n";
-    nvvmDestroyProgram(&program);
-    return false;
-  }
-
-  std::string libdevice;
-  libdeviceIn.seekg(0, std::ios::end);
-  libdevice.resize(libdeviceIn.tellg());
-  libdeviceIn.seekg(0, std::ios::beg);
-  libdeviceIn.read(&libdevice[0], libdevice.size());
-  libdeviceIn.close();
-*/
-  if(addFileToProgram(libdeviceFileName.c_str(), program) != PTXGEN_SUCCESS)
-  {
-    llvm::errs() << "Unable to add libdevice module to NVVM compilation unit\n";
-    nvvmDestroyProgram(&program);
-    return false;
-  }
-
-  // Add Piko module to NVVM compilation unit by write it to disk first
-  // std::string pikoModule;
-  // llvm::raw_string_ostream pikoModuleStream(pikoModule);
-  // pikoModuleStream << *module;
-  std::string outputFilename("pikopipe.bc");
+  // Save IR to .bc file
+  const char *PIKOPIPE_BC = "pikopipe.bc";
+  std::string outputFilename(PIKOPIPE_BC);
   std::error_code ec;
   llvm::tool_output_file out(outputFilename, ec, llvm::sys::fs::F_None);
   if (ec) {
@@ -635,58 +777,19 @@ bool PTXBackend::emitDeviceCode(std::string filename) {
   llvm::WriteBitcodeToFile(module, out.os());
   out.keep();
 
-  if(addFileToProgram(outputFilename.c_str(), program) != PTXGEN_SUCCESS) {
-    llvm::errs() << "Unable to add Piko module to NVVM compilation unit\n";
-    nvvmDestroyProgram(&program);
-    return false;
-  }
+  // Backend code generation to PTX
+  // TODO allow for backend options
+  int nvvmNumOptions = 1;
+  const char* nvvmOptions[] = {"-arch=compute_35"};
+  const char *filenames[] = {PIKOPIPE_BC};
+  char* ptx = nullptr;
 
-  // Verify NVVM compilation unit
-  bool exitCompilation = false;
-  nvvmResult res;
-  if ((res = nvvmVerifyProgram(program, nvvmNumOptions, nvvmOptions))
-       != NVVM_SUCCESS) {
-    llvm::errs() << "Error: [" << nvvmGetErrorString(res)
-                 << "] Failed to verify NVVM compilation unit\n";
-    // nvvmGetProgramLog (program, nvvmLog);
-    exitCompilation = true;
-  }
-
-  if(printWarningsAndErrorsNVVM(program) || exitCompilation) {
-    nvvmDestroyProgram(&program);
-    return false;
-  }
-
-  // Compile the NVVM compilation unit
-  char* ptx;
-  if(nvvmCompileProgram(program, nvvmNumOptions, nvvmOptions) != NVVM_SUCCESS) {
-    llvm::errs() << "Failed to generate PTX from NVVM compilation unit\n";
-    exitCompilation = true;
-  }
-  else {
-    size_t ptxSize;
-    if ((res = nvvmGetCompiledResultSize(program, &ptxSize))
-          != NVVM_SUCCESS) {
-      llvm::errs() << "Error: [" << nvvmGetErrorString(res)
-                   << "] Failed to get the PTX output size\n";
-      exitCompilation = true;
-    }
-    else {
-      ptx = (char*) malloc(ptxSize);
-      if(ptx == NULL) {
-        llvm::errs() << "Failed to allocate memory for PTX output\n";
-        exitCompilation = true;
-      }
-      else if(nvvmGetCompiledResult(program, ptx) != NVVM_SUCCESS) {
-        llvm::errs() << "Failed to get the PTX output\n";
-        exitCompilation = true;
-      }
-    }
-  }
-
-  if(printWarningsAndErrorsNVVM(program) || exitCompilation) {
+  auto status = generatePTX(nvvmNumOptions,   nvvmOptions,
+                            1, (const char **) filenames,
+                            pikocOptions.computeArch, &ptx);
+  if (status != PTXGEN_SUCCESS) {
+    // llvm::errs() << "Cannot compile " << PIKOPIPE_BC << " to ptx\n";
     free(ptx);
-    nvvmDestroyProgram(&program);
     return false;
   }
 
@@ -695,7 +798,6 @@ bool PTXBackend::emitDeviceCode(std::string filename) {
   if(!ptxOut.is_open()) {
     llvm::errs() << "Unable to open PTX output file: " << outFileName << "\n";
     free(ptx);
-    nvvmDestroyProgram(&program);
     return false;
   }
 
@@ -705,8 +807,7 @@ bool PTXBackend::emitDeviceCode(std::string filename) {
   bool foundTarget = false;
   bool foundAddressSize = false;
   std::stringstream ss(ptx);
-  do
-  {
+  do {
     std::string line;
     std::getline(ss, line);
 
@@ -724,31 +825,19 @@ bool PTXBackend::emitDeviceCode(std::string filename) {
 
   } while(!ss.eof());
 
-  if(! (foundVersion && foundTarget && foundAddressSize) )
-  {
+  if(! (foundVersion && foundTarget && foundAddressSize) ) {
     llvm::errs() << "ERROR: Failed to find .version, .target, and/or .address_size declarations "
                  << "in the PTX output\n";
     ptxOut.close();
     free(ptx);
-    nvvmDestroyProgram(&program);
     return false;
   }
-
-  // Print out the vprintf function declaration
-  ptxOut << "\n";
-  ptxOut << ".extern .func  (.param .b32 func_retval0) vprintf" << "\n";
-  ptxOut << "(" << "\n";
-  ptxOut << "  .param .b64 vprintf_param_0," << "\n";
-  ptxOut << "  .param .b64 vprintf_param_1" << "\n";
-  ptxOut << ")" << "\n";
-  ptxOut << ";" << "\n";
 
   // Print out the rest of the PTX code
   ptxOut << ss.rdbuf();
   ptxOut.close();
 
   free(ptx);
-  nvvmDestroyProgram(&program);
 
 	return true;
 }

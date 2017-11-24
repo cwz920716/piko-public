@@ -31,6 +31,7 @@ public:
   std::string inFileName;
 
   int numRuns;
+  int computeArch;
 
   std::vector<std::string> includeDirs;
 
@@ -44,6 +45,7 @@ public:
     displayGrid = false;
 
     numRuns = 1;
+    computeArch = 35;
   }
 
   static void printOptions();

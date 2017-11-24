@@ -140,7 +140,7 @@ void initScene(int argc, char* argv[])
 
   printf("Flattening scene assets: "); fflush(stdout);
   sMain.flatten(nTris, nVerts, nPatches);
-  printf("T: %d, V: %d\n", nTris, nVerts, nPatches);
+  printf("T: %d, V: %d, P: %d\n", nTris, nVerts, nPatches);
 
   //findCameraZrange();
   buildProjectionMatrix();

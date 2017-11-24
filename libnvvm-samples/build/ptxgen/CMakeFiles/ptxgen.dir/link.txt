@@ -1,0 +1,1 @@
+/usr/bin/cc   -rdynamic -Wl,-rpath,/usr/local/cuda-8.0/nvvm/lib64 CMakeFiles/ptxgen.dir/ptxgen.c.o  -o ptxgen -Wl,-rpath,/usr/local/cuda-8.0/nvvm/lib64: /usr/local/cuda-8.0/nvvm/lib64/libnvvm.so 
