@@ -1,3 +1,3 @@
-CUDA_PATH = /usr/local/cuda-8.0
+CUDA_PATH = /usr/local/cuda
 LLVM_INSTALL_PATH = /home/cwz/llvm-root/build-3.8.0
 LLVM_SRC_PATH = /home/cwz/llvm-root/llvm-3.8.0.src

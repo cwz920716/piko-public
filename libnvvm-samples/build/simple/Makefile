@@ -48,10 +48,10 @@ RM = /usr/local/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/cwz/libnvvm-samples
+CMAKE_SOURCE_DIR = /home/cwz/piko-public/libnvvm-samples
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/cwz/libnvvm-samples/build
+CMAKE_BINARY_DIR = /home/cwz/piko-public/libnvvm-samples/build
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -126,14 +126,14 @@ install/fast: preinstall/fast
 
 # The main all target
 all: cmake_check_build_system
-	cd /home/cwz/libnvvm-samples/build && $(CMAKE_COMMAND) -E cmake_progress_start /home/cwz/libnvvm-samples/build/CMakeFiles /home/cwz/libnvvm-samples/build/simple/CMakeFiles/progress.marks
-	cd /home/cwz/libnvvm-samples/build && $(MAKE) -f CMakeFiles/Makefile2 simple/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/cwz/libnvvm-samples/build/CMakeFiles 0
+	cd /home/cwz/piko-public/libnvvm-samples/build && $(CMAKE_COMMAND) -E cmake_progress_start /home/cwz/piko-public/libnvvm-samples/build/CMakeFiles /home/cwz/piko-public/libnvvm-samples/build/simple/CMakeFiles/progress.marks
+	cd /home/cwz/piko-public/libnvvm-samples/build && $(MAKE) -f CMakeFiles/Makefile2 simple/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/cwz/piko-public/libnvvm-samples/build/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
 clean:
-	cd /home/cwz/libnvvm-samples/build && $(MAKE) -f CMakeFiles/Makefile2 simple/clean
+	cd /home/cwz/piko-public/libnvvm-samples/build && $(MAKE) -f CMakeFiles/Makefile2 simple/clean
 .PHONY : clean
 
 # The main clean target
@@ -143,22 +143,22 @@ clean/fast: clean
 
 # Prepare targets for installation.
 preinstall: all
-	cd /home/cwz/libnvvm-samples/build && $(MAKE) -f CMakeFiles/Makefile2 simple/preinstall
+	cd /home/cwz/piko-public/libnvvm-samples/build && $(MAKE) -f CMakeFiles/Makefile2 simple/preinstall
 .PHONY : preinstall
 
 # Prepare targets for installation.
 preinstall/fast:
-	cd /home/cwz/libnvvm-samples/build && $(MAKE) -f CMakeFiles/Makefile2 simple/preinstall
+	cd /home/cwz/piko-public/libnvvm-samples/build && $(MAKE) -f CMakeFiles/Makefile2 simple/preinstall
 .PHONY : preinstall/fast
 
 # clear depends
 depend:
-	cd /home/cwz/libnvvm-samples/build && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
+	cd /home/cwz/piko-public/libnvvm-samples/build && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
 .PHONY : depend
 
 # Convenience name for target.
 simple/CMakeFiles/simple.dir/rule:
-	cd /home/cwz/libnvvm-samples/build && $(MAKE) -f CMakeFiles/Makefile2 simple/CMakeFiles/simple.dir/rule
+	cd /home/cwz/piko-public/libnvvm-samples/build && $(MAKE) -f CMakeFiles/Makefile2 simple/CMakeFiles/simple.dir/rule
 .PHONY : simple/CMakeFiles/simple.dir/rule
 
 # Convenience name for target.
@@ -168,7 +168,7 @@ simple: simple/CMakeFiles/simple.dir/rule
 
 # fast build rule for target.
 simple/fast:
-	cd /home/cwz/libnvvm-samples/build && $(MAKE) -f simple/CMakeFiles/simple.dir/build.make simple/CMakeFiles/simple.dir/build
+	cd /home/cwz/piko-public/libnvvm-samples/build && $(MAKE) -f simple/CMakeFiles/simple.dir/build.make simple/CMakeFiles/simple.dir/build
 .PHONY : simple/fast
 
 simple.o: simple.c.o
@@ -177,7 +177,7 @@ simple.o: simple.c.o
 
 # target to build an object file
 simple.c.o:
-	cd /home/cwz/libnvvm-samples/build && $(MAKE) -f simple/CMakeFiles/simple.dir/build.make simple/CMakeFiles/simple.dir/simple.c.o
+	cd /home/cwz/piko-public/libnvvm-samples/build && $(MAKE) -f simple/CMakeFiles/simple.dir/build.make simple/CMakeFiles/simple.dir/simple.c.o
 .PHONY : simple.c.o
 
 simple.i: simple.c.i
@@ -186,7 +186,7 @@ simple.i: simple.c.i
 
 # target to preprocess a source file
 simple.c.i:
-	cd /home/cwz/libnvvm-samples/build && $(MAKE) -f simple/CMakeFiles/simple.dir/build.make simple/CMakeFiles/simple.dir/simple.c.i
+	cd /home/cwz/piko-public/libnvvm-samples/build && $(MAKE) -f simple/CMakeFiles/simple.dir/build.make simple/CMakeFiles/simple.dir/simple.c.i
 .PHONY : simple.c.i
 
 simple.s: simple.c.s
@@ -195,7 +195,7 @@ simple.s: simple.c.s
 
 # target to generate assembly for a file
 simple.c.s:
-	cd /home/cwz/libnvvm-samples/build && $(MAKE) -f simple/CMakeFiles/simple.dir/build.make simple/CMakeFiles/simple.dir/simple.c.s
+	cd /home/cwz/piko-public/libnvvm-samples/build && $(MAKE) -f simple/CMakeFiles/simple.dir/build.make simple/CMakeFiles/simple.dir/simple.c.s
 .PHONY : simple.c.s
 
 # Help Target
@@ -225,6 +225,6 @@ help:
 # No rule that depends on this can have commands that come from listfiles
 # because they might be regenerated.
 cmake_check_build_system:
-	cd /home/cwz/libnvvm-samples/build && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
+	cd /home/cwz/piko-public/libnvvm-samples/build && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
 .PHONY : cmake_check_build_system
 

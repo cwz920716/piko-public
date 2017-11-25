@@ -4,7 +4,7 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_C
-  "/home/cwz/libnvvm-samples/ptxgen/ptxgen.c" "/home/cwz/libnvvm-samples/build/ptxgen/CMakeFiles/ptxgen.dir/ptxgen.c.o"
+  "/home/cwz/piko-public/libnvvm-samples/ptxgen/ptxgen.c" "/home/cwz/piko-public/libnvvm-samples/build/ptxgen/CMakeFiles/ptxgen.dir/ptxgen.c.o"
   )
 set(CMAKE_C_COMPILER_ID "GNU")
 

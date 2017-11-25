@@ -10,7 +10,7 @@ The output was:
 
 Compilation of the C compiler identification source "CMakeCCompilerId.c" produced "a.out"
 
-The C compiler identification is GNU, found in "/home/cwz/libnvvm-samples/build/CMakeFiles/3.10.0/CompilerIdC/a.out"
+The C compiler identification is GNU, found in "/home/cwz/piko-public/libnvvm-samples/build/CMakeFiles/3.10.0/CompilerIdC/a.out"
 
 Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" succeeded.
 Compiler: /usr/bin/c++ 
@@ -23,33 +23,33 @@ The output was:
 
 Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "a.out"
 
-The CXX compiler identification is GNU, found in "/home/cwz/libnvvm-samples/build/CMakeFiles/3.10.0/CompilerIdCXX/a.out"
+The CXX compiler identification is GNU, found in "/home/cwz/piko-public/libnvvm-samples/build/CMakeFiles/3.10.0/CompilerIdCXX/a.out"
 
 Determining if the C compiler works passed with the following output:
-Change Dir: /home/cwz/libnvvm-samples/build/CMakeFiles/CMakeTmp
+Change Dir: /home/cwz/piko-public/libnvvm-samples/build/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/make" "cmTC_49f68/fast"
-/usr/bin/make -f CMakeFiles/cmTC_49f68.dir/build.make CMakeFiles/cmTC_49f68.dir/build
-make[1]: Entering directory '/home/cwz/libnvvm-samples/build/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_49f68.dir/testCCompiler.c.o
-/usr/bin/cc    -o CMakeFiles/cmTC_49f68.dir/testCCompiler.c.o   -c /home/cwz/libnvvm-samples/build/CMakeFiles/CMakeTmp/testCCompiler.c
-Linking C executable cmTC_49f68
-/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_49f68.dir/link.txt --verbose=1
-/usr/bin/cc      -rdynamic CMakeFiles/cmTC_49f68.dir/testCCompiler.c.o  -o cmTC_49f68 
-make[1]: Leaving directory '/home/cwz/libnvvm-samples/build/CMakeFiles/CMakeTmp'
+Run Build Command:"/usr/bin/make" "cmTC_7980e/fast"
+/usr/bin/make -f CMakeFiles/cmTC_7980e.dir/build.make CMakeFiles/cmTC_7980e.dir/build
+make[1]: Entering directory '/home/cwz/piko-public/libnvvm-samples/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_7980e.dir/testCCompiler.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_7980e.dir/testCCompiler.c.o   -c /home/cwz/piko-public/libnvvm-samples/build/CMakeFiles/CMakeTmp/testCCompiler.c
+Linking C executable cmTC_7980e
+/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_7980e.dir/link.txt --verbose=1
+/usr/bin/cc      -rdynamic CMakeFiles/cmTC_7980e.dir/testCCompiler.c.o  -o cmTC_7980e 
+make[1]: Leaving directory '/home/cwz/piko-public/libnvvm-samples/build/CMakeFiles/CMakeTmp'
 
 
 Detecting C compiler ABI info compiled with the following output:
-Change Dir: /home/cwz/libnvvm-samples/build/CMakeFiles/CMakeTmp
+Change Dir: /home/cwz/piko-public/libnvvm-samples/build/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/make" "cmTC_de754/fast"
-/usr/bin/make -f CMakeFiles/cmTC_de754.dir/build.make CMakeFiles/cmTC_de754.dir/build
-make[1]: Entering directory '/home/cwz/libnvvm-samples/build/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_de754.dir/CMakeCCompilerABI.c.o
-/usr/bin/cc    -o CMakeFiles/cmTC_de754.dir/CMakeCCompilerABI.c.o   -c /usr/local/share/cmake-3.10/Modules/CMakeCCompilerABI.c
-Linking C executable cmTC_de754
-/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_de754.dir/link.txt --verbose=1
-/usr/bin/cc     -v -rdynamic CMakeFiles/cmTC_de754.dir/CMakeCCompilerABI.c.o  -o cmTC_de754 
+Run Build Command:"/usr/bin/make" "cmTC_1bc65/fast"
+/usr/bin/make -f CMakeFiles/cmTC_1bc65.dir/build.make CMakeFiles/cmTC_1bc65.dir/build
+make[1]: Entering directory '/home/cwz/piko-public/libnvvm-samples/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_1bc65.dir/CMakeCCompilerABI.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_1bc65.dir/CMakeCCompilerABI.c.o   -c /usr/local/share/cmake-3.10/Modules/CMakeCCompilerABI.c
+Linking C executable cmTC_1bc65
+/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_1bc65.dir/link.txt --verbose=1
+/usr/bin/cc     -v -rdynamic CMakeFiles/cmTC_1bc65.dir/CMakeCCompilerABI.c.o  -o cmTC_1bc65 
 Using built-in specs.
 COLLECT_GCC=/usr/bin/cc
 COLLECT_LTO_WRAPPER=/usr/lib/gcc/x86_64-linux-gnu/4.8/lto-wrapper
@@ -59,23 +59,23 @@ Thread model: posix
 gcc version 4.8.5 (Ubuntu 4.8.5-4ubuntu2) 
 COMPILER_PATH=/usr/lib/gcc/x86_64-linux-gnu/4.8/:/usr/lib/gcc/x86_64-linux-gnu/4.8/:/usr/lib/gcc/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/4.8/:/usr/lib/gcc/x86_64-linux-gnu/
 LIBRARY_PATH=/usr/lib/gcc/x86_64-linux-gnu/4.8/:/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../../lib/:/lib/x86_64-linux-gnu/:/lib/../lib/:/usr/lib/x86_64-linux-gnu/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../:/lib/:/usr/lib/
-COLLECT_GCC_OPTIONS='-v' '-rdynamic' '-o' 'cmTC_de754' '-mtune=generic' '-march=x86-64'
- /usr/lib/gcc/x86_64-linux-gnu/4.8/collect2 --sysroot=/ --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -export-dynamic -dynamic-linker /lib64/ld-linux-x86-64.so.2 -z relro -o cmTC_de754 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/4.8/crtbegin.o -L/usr/lib/gcc/x86_64-linux-gnu/4.8 -L/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/4.8/../../.. CMakeFiles/cmTC_de754.dir/CMakeCCompilerABI.c.o -lgcc --as-needed -lgcc_s --no-as-needed -lc -lgcc --as-needed -lgcc_s --no-as-needed /usr/lib/gcc/x86_64-linux-gnu/4.8/crtend.o /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crtn.o
-make[1]: Leaving directory '/home/cwz/libnvvm-samples/build/CMakeFiles/CMakeTmp'
+COLLECT_GCC_OPTIONS='-v' '-rdynamic' '-o' 'cmTC_1bc65' '-mtune=generic' '-march=x86-64'
+ /usr/lib/gcc/x86_64-linux-gnu/4.8/collect2 --sysroot=/ --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -export-dynamic -dynamic-linker /lib64/ld-linux-x86-64.so.2 -z relro -o cmTC_1bc65 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/4.8/crtbegin.o -L/usr/lib/gcc/x86_64-linux-gnu/4.8 -L/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/4.8/../../.. CMakeFiles/cmTC_1bc65.dir/CMakeCCompilerABI.c.o -lgcc --as-needed -lgcc_s --no-as-needed -lc -lgcc --as-needed -lgcc_s --no-as-needed /usr/lib/gcc/x86_64-linux-gnu/4.8/crtend.o /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crtn.o
+make[1]: Leaving directory '/home/cwz/piko-public/libnvvm-samples/build/CMakeFiles/CMakeTmp'
 
 
 Parsed C implicit link information from above output:
   link line regex: [^( *|.*[/\])(ld|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\]+-)?ld|collect2)[^/\]*( |$)]
-  ignore line: [Change Dir: /home/cwz/libnvvm-samples/build/CMakeFiles/CMakeTmp]
+  ignore line: [Change Dir: /home/cwz/piko-public/libnvvm-samples/build/CMakeFiles/CMakeTmp]
   ignore line: []
-  ignore line: [Run Build Command:"/usr/bin/make" "cmTC_de754/fast"]
-  ignore line: [/usr/bin/make -f CMakeFiles/cmTC_de754.dir/build.make CMakeFiles/cmTC_de754.dir/build]
-  ignore line: [make[1]: Entering directory '/home/cwz/libnvvm-samples/build/CMakeFiles/CMakeTmp']
-  ignore line: [Building C object CMakeFiles/cmTC_de754.dir/CMakeCCompilerABI.c.o]
-  ignore line: [/usr/bin/cc    -o CMakeFiles/cmTC_de754.dir/CMakeCCompilerABI.c.o   -c /usr/local/share/cmake-3.10/Modules/CMakeCCompilerABI.c]
-  ignore line: [Linking C executable cmTC_de754]
-  ignore line: [/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_de754.dir/link.txt --verbose=1]
-  ignore line: [/usr/bin/cc     -v -rdynamic CMakeFiles/cmTC_de754.dir/CMakeCCompilerABI.c.o  -o cmTC_de754 ]
+  ignore line: [Run Build Command:"/usr/bin/make" "cmTC_1bc65/fast"]
+  ignore line: [/usr/bin/make -f CMakeFiles/cmTC_1bc65.dir/build.make CMakeFiles/cmTC_1bc65.dir/build]
+  ignore line: [make[1]: Entering directory '/home/cwz/piko-public/libnvvm-samples/build/CMakeFiles/CMakeTmp']
+  ignore line: [Building C object CMakeFiles/cmTC_1bc65.dir/CMakeCCompilerABI.c.o]
+  ignore line: [/usr/bin/cc    -o CMakeFiles/cmTC_1bc65.dir/CMakeCCompilerABI.c.o   -c /usr/local/share/cmake-3.10/Modules/CMakeCCompilerABI.c]
+  ignore line: [Linking C executable cmTC_1bc65]
+  ignore line: [/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_1bc65.dir/link.txt --verbose=1]
+  ignore line: [/usr/bin/cc     -v -rdynamic CMakeFiles/cmTC_1bc65.dir/CMakeCCompilerABI.c.o  -o cmTC_1bc65 ]
   ignore line: [Using built-in specs.]
   ignore line: [COLLECT_GCC=/usr/bin/cc]
   ignore line: [COLLECT_LTO_WRAPPER=/usr/lib/gcc/x86_64-linux-gnu/4.8/lto-wrapper]
@@ -85,8 +85,8 @@ Parsed C implicit link information from above output:
   ignore line: [gcc version 4.8.5 (Ubuntu 4.8.5-4ubuntu2) ]
   ignore line: [COMPILER_PATH=/usr/lib/gcc/x86_64-linux-gnu/4.8/:/usr/lib/gcc/x86_64-linux-gnu/4.8/:/usr/lib/gcc/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/4.8/:/usr/lib/gcc/x86_64-linux-gnu/]
   ignore line: [LIBRARY_PATH=/usr/lib/gcc/x86_64-linux-gnu/4.8/:/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../../lib/:/lib/x86_64-linux-gnu/:/lib/../lib/:/usr/lib/x86_64-linux-gnu/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../:/lib/:/usr/lib/]
-  ignore line: [COLLECT_GCC_OPTIONS='-v' '-rdynamic' '-o' 'cmTC_de754' '-mtune=generic' '-march=x86-64']
-  link line: [ /usr/lib/gcc/x86_64-linux-gnu/4.8/collect2 --sysroot=/ --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -export-dynamic -dynamic-linker /lib64/ld-linux-x86-64.so.2 -z relro -o cmTC_de754 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/4.8/crtbegin.o -L/usr/lib/gcc/x86_64-linux-gnu/4.8 -L/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/4.8/../../.. CMakeFiles/cmTC_de754.dir/CMakeCCompilerABI.c.o -lgcc --as-needed -lgcc_s --no-as-needed -lc -lgcc --as-needed -lgcc_s --no-as-needed /usr/lib/gcc/x86_64-linux-gnu/4.8/crtend.o /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crtn.o]
+  ignore line: [COLLECT_GCC_OPTIONS='-v' '-rdynamic' '-o' 'cmTC_1bc65' '-mtune=generic' '-march=x86-64']
+  link line: [ /usr/lib/gcc/x86_64-linux-gnu/4.8/collect2 --sysroot=/ --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -export-dynamic -dynamic-linker /lib64/ld-linux-x86-64.so.2 -z relro -o cmTC_1bc65 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/4.8/crtbegin.o -L/usr/lib/gcc/x86_64-linux-gnu/4.8 -L/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/4.8/../../.. CMakeFiles/cmTC_1bc65.dir/CMakeCCompilerABI.c.o -lgcc --as-needed -lgcc_s --no-as-needed -lc -lgcc --as-needed -lgcc_s --no-as-needed /usr/lib/gcc/x86_64-linux-gnu/4.8/crtend.o /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crtn.o]
     arg [/usr/lib/gcc/x86_64-linux-gnu/4.8/collect2] ==> ignore
     arg [--sysroot=/] ==> ignore
     arg [--build-id] ==> ignore
@@ -100,7 +100,7 @@ Parsed C implicit link information from above output:
     arg [/lib64/ld-linux-x86-64.so.2] ==> ignore
     arg [-zrelro] ==> ignore
     arg [-o] ==> ignore
-    arg [cmTC_de754] ==> ignore
+    arg [cmTC_1bc65] ==> ignore
     arg [/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o] ==> ignore
     arg [/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crti.o] ==> ignore
     arg [/usr/lib/gcc/x86_64-linux-gnu/4.8/crtbegin.o] ==> ignore
@@ -112,7 +112,7 @@ Parsed C implicit link information from above output:
     arg [-L/usr/lib/x86_64-linux-gnu] ==> dir [/usr/lib/x86_64-linux-gnu]
     arg [-L/usr/lib/../lib] ==> dir [/usr/lib/../lib]
     arg [-L/usr/lib/gcc/x86_64-linux-gnu/4.8/../../..] ==> dir [/usr/lib/gcc/x86_64-linux-gnu/4.8/../../..]
-    arg [CMakeFiles/cmTC_de754.dir/CMakeCCompilerABI.c.o] ==> ignore
+    arg [CMakeFiles/cmTC_1bc65.dir/CMakeCCompilerABI.c.o] ==> ignore
     arg [-lgcc] ==> lib [gcc]
     arg [--as-needed] ==> ignore
     arg [-lgcc_s] ==> lib [gcc_s]
@@ -140,17 +140,17 @@ Parsed C implicit link information from above output:
 
 
 Detecting C [-std=c11] compiler features compiled with the following output:
-Change Dir: /home/cwz/libnvvm-samples/build/CMakeFiles/CMakeTmp
+Change Dir: /home/cwz/piko-public/libnvvm-samples/build/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/make" "cmTC_ca313/fast"
-/usr/bin/make -f CMakeFiles/cmTC_ca313.dir/build.make CMakeFiles/cmTC_ca313.dir/build
-make[1]: Entering directory '/home/cwz/libnvvm-samples/build/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_ca313.dir/feature_tests.c.o
-/usr/bin/cc   -std=c11 -o CMakeFiles/cmTC_ca313.dir/feature_tests.c.o   -c /home/cwz/libnvvm-samples/build/CMakeFiles/feature_tests.c
-Linking C executable cmTC_ca313
-/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_ca313.dir/link.txt --verbose=1
-/usr/bin/cc      -rdynamic CMakeFiles/cmTC_ca313.dir/feature_tests.c.o  -o cmTC_ca313 
-make[1]: Leaving directory '/home/cwz/libnvvm-samples/build/CMakeFiles/CMakeTmp'
+Run Build Command:"/usr/bin/make" "cmTC_7e6bd/fast"
+/usr/bin/make -f CMakeFiles/cmTC_7e6bd.dir/build.make CMakeFiles/cmTC_7e6bd.dir/build
+make[1]: Entering directory '/home/cwz/piko-public/libnvvm-samples/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_7e6bd.dir/feature_tests.c.o
+/usr/bin/cc   -std=c11 -o CMakeFiles/cmTC_7e6bd.dir/feature_tests.c.o   -c /home/cwz/piko-public/libnvvm-samples/build/CMakeFiles/feature_tests.c
+Linking C executable cmTC_7e6bd
+/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_7e6bd.dir/link.txt --verbose=1
+/usr/bin/cc      -rdynamic CMakeFiles/cmTC_7e6bd.dir/feature_tests.c.o  -o cmTC_7e6bd 
+make[1]: Leaving directory '/home/cwz/piko-public/libnvvm-samples/build/CMakeFiles/CMakeTmp'
 
 
     Feature record: C_FEATURE:1c_function_prototypes
@@ -160,17 +160,17 @@ make[1]: Leaving directory '/home/cwz/libnvvm-samples/build/CMakeFiles/CMakeTmp'
 
 
 Detecting C [-std=c99] compiler features compiled with the following output:
-Change Dir: /home/cwz/libnvvm-samples/build/CMakeFiles/CMakeTmp
+Change Dir: /home/cwz/piko-public/libnvvm-samples/build/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/make" "cmTC_10336/fast"
-/usr/bin/make -f CMakeFiles/cmTC_10336.dir/build.make CMakeFiles/cmTC_10336.dir/build
-make[1]: Entering directory '/home/cwz/libnvvm-samples/build/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_10336.dir/feature_tests.c.o
-/usr/bin/cc   -std=c99 -o CMakeFiles/cmTC_10336.dir/feature_tests.c.o   -c /home/cwz/libnvvm-samples/build/CMakeFiles/feature_tests.c
-Linking C executable cmTC_10336
-/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_10336.dir/link.txt --verbose=1
-/usr/bin/cc      -rdynamic CMakeFiles/cmTC_10336.dir/feature_tests.c.o  -o cmTC_10336 
-make[1]: Leaving directory '/home/cwz/libnvvm-samples/build/CMakeFiles/CMakeTmp'
+Run Build Command:"/usr/bin/make" "cmTC_10ff6/fast"
+/usr/bin/make -f CMakeFiles/cmTC_10ff6.dir/build.make CMakeFiles/cmTC_10ff6.dir/build
+make[1]: Entering directory '/home/cwz/piko-public/libnvvm-samples/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_10ff6.dir/feature_tests.c.o
+/usr/bin/cc   -std=c99 -o CMakeFiles/cmTC_10ff6.dir/feature_tests.c.o   -c /home/cwz/piko-public/libnvvm-samples/build/CMakeFiles/feature_tests.c
+Linking C executable cmTC_10ff6
+/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_10ff6.dir/link.txt --verbose=1
+/usr/bin/cc      -rdynamic CMakeFiles/cmTC_10ff6.dir/feature_tests.c.o  -o cmTC_10ff6 
+make[1]: Leaving directory '/home/cwz/piko-public/libnvvm-samples/build/CMakeFiles/CMakeTmp'
 
 
     Feature record: C_FEATURE:1c_function_prototypes
@@ -180,17 +180,17 @@ make[1]: Leaving directory '/home/cwz/libnvvm-samples/build/CMakeFiles/CMakeTmp'
 
 
 Detecting C [-std=c90] compiler features compiled with the following output:
-Change Dir: /home/cwz/libnvvm-samples/build/CMakeFiles/CMakeTmp
+Change Dir: /home/cwz/piko-public/libnvvm-samples/build/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/make" "cmTC_b0a85/fast"
-/usr/bin/make -f CMakeFiles/cmTC_b0a85.dir/build.make CMakeFiles/cmTC_b0a85.dir/build
-make[1]: Entering directory '/home/cwz/libnvvm-samples/build/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_b0a85.dir/feature_tests.c.o
-/usr/bin/cc   -std=c90 -o CMakeFiles/cmTC_b0a85.dir/feature_tests.c.o   -c /home/cwz/libnvvm-samples/build/CMakeFiles/feature_tests.c
-Linking C executable cmTC_b0a85
-/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_b0a85.dir/link.txt --verbose=1
-/usr/bin/cc      -rdynamic CMakeFiles/cmTC_b0a85.dir/feature_tests.c.o  -o cmTC_b0a85 
-make[1]: Leaving directory '/home/cwz/libnvvm-samples/build/CMakeFiles/CMakeTmp'
+Run Build Command:"/usr/bin/make" "cmTC_19a71/fast"
+/usr/bin/make -f CMakeFiles/cmTC_19a71.dir/build.make CMakeFiles/cmTC_19a71.dir/build
+make[1]: Entering directory '/home/cwz/piko-public/libnvvm-samples/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_19a71.dir/feature_tests.c.o
+/usr/bin/cc   -std=c90 -o CMakeFiles/cmTC_19a71.dir/feature_tests.c.o   -c /home/cwz/piko-public/libnvvm-samples/build/CMakeFiles/feature_tests.c
+Linking C executable cmTC_19a71
+/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_19a71.dir/link.txt --verbose=1
+/usr/bin/cc      -rdynamic CMakeFiles/cmTC_19a71.dir/feature_tests.c.o  -o cmTC_19a71 
+make[1]: Leaving directory '/home/cwz/piko-public/libnvvm-samples/build/CMakeFiles/CMakeTmp'
 
 
     Feature record: C_FEATURE:1c_function_prototypes
@@ -198,30 +198,30 @@ make[1]: Leaving directory '/home/cwz/libnvvm-samples/build/CMakeFiles/CMakeTmp'
     Feature record: C_FEATURE:0c_static_assert
     Feature record: C_FEATURE:0c_variadic_macros
 Determining if the CXX compiler works passed with the following output:
-Change Dir: /home/cwz/libnvvm-samples/build/CMakeFiles/CMakeTmp
+Change Dir: /home/cwz/piko-public/libnvvm-samples/build/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/make" "cmTC_4f07a/fast"
-/usr/bin/make -f CMakeFiles/cmTC_4f07a.dir/build.make CMakeFiles/cmTC_4f07a.dir/build
-make[1]: Entering directory '/home/cwz/libnvvm-samples/build/CMakeFiles/CMakeTmp'
-Building CXX object CMakeFiles/cmTC_4f07a.dir/testCXXCompiler.cxx.o
-/usr/bin/c++     -o CMakeFiles/cmTC_4f07a.dir/testCXXCompiler.cxx.o -c /home/cwz/libnvvm-samples/build/CMakeFiles/CMakeTmp/testCXXCompiler.cxx
-Linking CXX executable cmTC_4f07a
-/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_4f07a.dir/link.txt --verbose=1
-/usr/bin/c++       -rdynamic CMakeFiles/cmTC_4f07a.dir/testCXXCompiler.cxx.o  -o cmTC_4f07a 
-make[1]: Leaving directory '/home/cwz/libnvvm-samples/build/CMakeFiles/CMakeTmp'
+Run Build Command:"/usr/bin/make" "cmTC_61ae5/fast"
+/usr/bin/make -f CMakeFiles/cmTC_61ae5.dir/build.make CMakeFiles/cmTC_61ae5.dir/build
+make[1]: Entering directory '/home/cwz/piko-public/libnvvm-samples/build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_61ae5.dir/testCXXCompiler.cxx.o
+/usr/bin/c++     -o CMakeFiles/cmTC_61ae5.dir/testCXXCompiler.cxx.o -c /home/cwz/piko-public/libnvvm-samples/build/CMakeFiles/CMakeTmp/testCXXCompiler.cxx
+Linking CXX executable cmTC_61ae5
+/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_61ae5.dir/link.txt --verbose=1
+/usr/bin/c++       -rdynamic CMakeFiles/cmTC_61ae5.dir/testCXXCompiler.cxx.o  -o cmTC_61ae5 
+make[1]: Leaving directory '/home/cwz/piko-public/libnvvm-samples/build/CMakeFiles/CMakeTmp'
 
 
 Detecting CXX compiler ABI info compiled with the following output:
-Change Dir: /home/cwz/libnvvm-samples/build/CMakeFiles/CMakeTmp
+Change Dir: /home/cwz/piko-public/libnvvm-samples/build/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/make" "cmTC_ff33b/fast"
-/usr/bin/make -f CMakeFiles/cmTC_ff33b.dir/build.make CMakeFiles/cmTC_ff33b.dir/build
-make[1]: Entering directory '/home/cwz/libnvvm-samples/build/CMakeFiles/CMakeTmp'
-Building CXX object CMakeFiles/cmTC_ff33b.dir/CMakeCXXCompilerABI.cpp.o
-/usr/bin/c++     -o CMakeFiles/cmTC_ff33b.dir/CMakeCXXCompilerABI.cpp.o -c /usr/local/share/cmake-3.10/Modules/CMakeCXXCompilerABI.cpp
-Linking CXX executable cmTC_ff33b
-/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_ff33b.dir/link.txt --verbose=1
-/usr/bin/c++      -v -rdynamic CMakeFiles/cmTC_ff33b.dir/CMakeCXXCompilerABI.cpp.o  -o cmTC_ff33b 
+Run Build Command:"/usr/bin/make" "cmTC_fc827/fast"
+/usr/bin/make -f CMakeFiles/cmTC_fc827.dir/build.make CMakeFiles/cmTC_fc827.dir/build
+make[1]: Entering directory '/home/cwz/piko-public/libnvvm-samples/build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_fc827.dir/CMakeCXXCompilerABI.cpp.o
+/usr/bin/c++     -o CMakeFiles/cmTC_fc827.dir/CMakeCXXCompilerABI.cpp.o -c /usr/local/share/cmake-3.10/Modules/CMakeCXXCompilerABI.cpp
+Linking CXX executable cmTC_fc827
+/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_fc827.dir/link.txt --verbose=1
+/usr/bin/c++      -v -rdynamic CMakeFiles/cmTC_fc827.dir/CMakeCXXCompilerABI.cpp.o  -o cmTC_fc827 
 Using built-in specs.
 COLLECT_GCC=/usr/bin/c++
 COLLECT_LTO_WRAPPER=/usr/lib/gcc/x86_64-linux-gnu/4.8/lto-wrapper
@@ -231,23 +231,23 @@ Thread model: posix
 gcc version 4.8.5 (Ubuntu 4.8.5-4ubuntu2) 
 COMPILER_PATH=/usr/lib/gcc/x86_64-linux-gnu/4.8/:/usr/lib/gcc/x86_64-linux-gnu/4.8/:/usr/lib/gcc/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/4.8/:/usr/lib/gcc/x86_64-linux-gnu/
 LIBRARY_PATH=/usr/lib/gcc/x86_64-linux-gnu/4.8/:/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../../lib/:/lib/x86_64-linux-gnu/:/lib/../lib/:/usr/lib/x86_64-linux-gnu/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../:/lib/:/usr/lib/
-COLLECT_GCC_OPTIONS='-v' '-rdynamic' '-o' 'cmTC_ff33b' '-shared-libgcc' '-mtune=generic' '-march=x86-64'
- /usr/lib/gcc/x86_64-linux-gnu/4.8/collect2 --sysroot=/ --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -export-dynamic -dynamic-linker /lib64/ld-linux-x86-64.so.2 -z relro -o cmTC_ff33b /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/4.8/crtbegin.o -L/usr/lib/gcc/x86_64-linux-gnu/4.8 -L/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/4.8/../../.. CMakeFiles/cmTC_ff33b.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /usr/lib/gcc/x86_64-linux-gnu/4.8/crtend.o /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crtn.o
-make[1]: Leaving directory '/home/cwz/libnvvm-samples/build/CMakeFiles/CMakeTmp'
+COLLECT_GCC_OPTIONS='-v' '-rdynamic' '-o' 'cmTC_fc827' '-shared-libgcc' '-mtune=generic' '-march=x86-64'
+ /usr/lib/gcc/x86_64-linux-gnu/4.8/collect2 --sysroot=/ --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -export-dynamic -dynamic-linker /lib64/ld-linux-x86-64.so.2 -z relro -o cmTC_fc827 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/4.8/crtbegin.o -L/usr/lib/gcc/x86_64-linux-gnu/4.8 -L/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/4.8/../../.. CMakeFiles/cmTC_fc827.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /usr/lib/gcc/x86_64-linux-gnu/4.8/crtend.o /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crtn.o
+make[1]: Leaving directory '/home/cwz/piko-public/libnvvm-samples/build/CMakeFiles/CMakeTmp'
 
 
 Parsed CXX implicit link information from above output:
   link line regex: [^( *|.*[/\])(ld|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\]+-)?ld|collect2)[^/\]*( |$)]
-  ignore line: [Change Dir: /home/cwz/libnvvm-samples/build/CMakeFiles/CMakeTmp]
+  ignore line: [Change Dir: /home/cwz/piko-public/libnvvm-samples/build/CMakeFiles/CMakeTmp]
   ignore line: []
-  ignore line: [Run Build Command:"/usr/bin/make" "cmTC_ff33b/fast"]
-  ignore line: [/usr/bin/make -f CMakeFiles/cmTC_ff33b.dir/build.make CMakeFiles/cmTC_ff33b.dir/build]
-  ignore line: [make[1]: Entering directory '/home/cwz/libnvvm-samples/build/CMakeFiles/CMakeTmp']
-  ignore line: [Building CXX object CMakeFiles/cmTC_ff33b.dir/CMakeCXXCompilerABI.cpp.o]
-  ignore line: [/usr/bin/c++     -o CMakeFiles/cmTC_ff33b.dir/CMakeCXXCompilerABI.cpp.o -c /usr/local/share/cmake-3.10/Modules/CMakeCXXCompilerABI.cpp]
-  ignore line: [Linking CXX executable cmTC_ff33b]
-  ignore line: [/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_ff33b.dir/link.txt --verbose=1]
-  ignore line: [/usr/bin/c++      -v -rdynamic CMakeFiles/cmTC_ff33b.dir/CMakeCXXCompilerABI.cpp.o  -o cmTC_ff33b ]
+  ignore line: [Run Build Command:"/usr/bin/make" "cmTC_fc827/fast"]
+  ignore line: [/usr/bin/make -f CMakeFiles/cmTC_fc827.dir/build.make CMakeFiles/cmTC_fc827.dir/build]
+  ignore line: [make[1]: Entering directory '/home/cwz/piko-public/libnvvm-samples/build/CMakeFiles/CMakeTmp']
+  ignore line: [Building CXX object CMakeFiles/cmTC_fc827.dir/CMakeCXXCompilerABI.cpp.o]
+  ignore line: [/usr/bin/c++     -o CMakeFiles/cmTC_fc827.dir/CMakeCXXCompilerABI.cpp.o -c /usr/local/share/cmake-3.10/Modules/CMakeCXXCompilerABI.cpp]
+  ignore line: [Linking CXX executable cmTC_fc827]
+  ignore line: [/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_fc827.dir/link.txt --verbose=1]
+  ignore line: [/usr/bin/c++      -v -rdynamic CMakeFiles/cmTC_fc827.dir/CMakeCXXCompilerABI.cpp.o  -o cmTC_fc827 ]
   ignore line: [Using built-in specs.]
   ignore line: [COLLECT_GCC=/usr/bin/c++]
   ignore line: [COLLECT_LTO_WRAPPER=/usr/lib/gcc/x86_64-linux-gnu/4.8/lto-wrapper]
@@ -257,8 +257,8 @@ Parsed CXX implicit link information from above output:
   ignore line: [gcc version 4.8.5 (Ubuntu 4.8.5-4ubuntu2) ]
   ignore line: [COMPILER_PATH=/usr/lib/gcc/x86_64-linux-gnu/4.8/:/usr/lib/gcc/x86_64-linux-gnu/4.8/:/usr/lib/gcc/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/4.8/:/usr/lib/gcc/x86_64-linux-gnu/]
   ignore line: [LIBRARY_PATH=/usr/lib/gcc/x86_64-linux-gnu/4.8/:/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../../lib/:/lib/x86_64-linux-gnu/:/lib/../lib/:/usr/lib/x86_64-linux-gnu/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../:/lib/:/usr/lib/]
-  ignore line: [COLLECT_GCC_OPTIONS='-v' '-rdynamic' '-o' 'cmTC_ff33b' '-shared-libgcc' '-mtune=generic' '-march=x86-64']
-  link line: [ /usr/lib/gcc/x86_64-linux-gnu/4.8/collect2 --sysroot=/ --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -export-dynamic -dynamic-linker /lib64/ld-linux-x86-64.so.2 -z relro -o cmTC_ff33b /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/4.8/crtbegin.o -L/usr/lib/gcc/x86_64-linux-gnu/4.8 -L/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/4.8/../../.. CMakeFiles/cmTC_ff33b.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /usr/lib/gcc/x86_64-linux-gnu/4.8/crtend.o /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crtn.o]
+  ignore line: [COLLECT_GCC_OPTIONS='-v' '-rdynamic' '-o' 'cmTC_fc827' '-shared-libgcc' '-mtune=generic' '-march=x86-64']
+  link line: [ /usr/lib/gcc/x86_64-linux-gnu/4.8/collect2 --sysroot=/ --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -export-dynamic -dynamic-linker /lib64/ld-linux-x86-64.so.2 -z relro -o cmTC_fc827 /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/4.8/crtbegin.o -L/usr/lib/gcc/x86_64-linux-gnu/4.8 -L/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/4.8/../../.. CMakeFiles/cmTC_fc827.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /usr/lib/gcc/x86_64-linux-gnu/4.8/crtend.o /usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crtn.o]
     arg [/usr/lib/gcc/x86_64-linux-gnu/4.8/collect2] ==> ignore
     arg [--sysroot=/] ==> ignore
     arg [--build-id] ==> ignore
@@ -272,7 +272,7 @@ Parsed CXX implicit link information from above output:
     arg [/lib64/ld-linux-x86-64.so.2] ==> ignore
     arg [-zrelro] ==> ignore
     arg [-o] ==> ignore
-    arg [cmTC_ff33b] ==> ignore
+    arg [cmTC_fc827] ==> ignore
     arg [/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crt1.o] ==> ignore
     arg [/usr/lib/gcc/x86_64-linux-gnu/4.8/../../../x86_64-linux-gnu/crti.o] ==> ignore
     arg [/usr/lib/gcc/x86_64-linux-gnu/4.8/crtbegin.o] ==> ignore
@@ -284,7 +284,7 @@ Parsed CXX implicit link information from above output:
     arg [-L/usr/lib/x86_64-linux-gnu] ==> dir [/usr/lib/x86_64-linux-gnu]
     arg [-L/usr/lib/../lib] ==> dir [/usr/lib/../lib]
     arg [-L/usr/lib/gcc/x86_64-linux-gnu/4.8/../../..] ==> dir [/usr/lib/gcc/x86_64-linux-gnu/4.8/../../..]
-    arg [CMakeFiles/cmTC_ff33b.dir/CMakeCXXCompilerABI.cpp.o] ==> ignore
+    arg [CMakeFiles/cmTC_fc827.dir/CMakeCXXCompilerABI.cpp.o] ==> ignore
     arg [-lstdc++] ==> lib [stdc++]
     arg [-lm] ==> lib [m]
     arg [-lgcc_s] ==> lib [gcc_s]
@@ -310,17 +310,17 @@ Parsed CXX implicit link information from above output:
 
 
 Detecting CXX [-std=c++1y] compiler features compiled with the following output:
-Change Dir: /home/cwz/libnvvm-samples/build/CMakeFiles/CMakeTmp
+Change Dir: /home/cwz/piko-public/libnvvm-samples/build/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/make" "cmTC_0c3fc/fast"
-/usr/bin/make -f CMakeFiles/cmTC_0c3fc.dir/build.make CMakeFiles/cmTC_0c3fc.dir/build
-make[1]: Entering directory '/home/cwz/libnvvm-samples/build/CMakeFiles/CMakeTmp'
-Building CXX object CMakeFiles/cmTC_0c3fc.dir/feature_tests.cxx.o
-/usr/bin/c++    -std=c++1y -o CMakeFiles/cmTC_0c3fc.dir/feature_tests.cxx.o -c /home/cwz/libnvvm-samples/build/CMakeFiles/feature_tests.cxx
-Linking CXX executable cmTC_0c3fc
-/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_0c3fc.dir/link.txt --verbose=1
-/usr/bin/c++       -rdynamic CMakeFiles/cmTC_0c3fc.dir/feature_tests.cxx.o  -o cmTC_0c3fc 
-make[1]: Leaving directory '/home/cwz/libnvvm-samples/build/CMakeFiles/CMakeTmp'
+Run Build Command:"/usr/bin/make" "cmTC_c2320/fast"
+/usr/bin/make -f CMakeFiles/cmTC_c2320.dir/build.make CMakeFiles/cmTC_c2320.dir/build
+make[1]: Entering directory '/home/cwz/piko-public/libnvvm-samples/build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_c2320.dir/feature_tests.cxx.o
+/usr/bin/c++    -std=c++1y -o CMakeFiles/cmTC_c2320.dir/feature_tests.cxx.o -c /home/cwz/piko-public/libnvvm-samples/build/CMakeFiles/feature_tests.cxx
+Linking CXX executable cmTC_c2320
+/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_c2320.dir/link.txt --verbose=1
+/usr/bin/c++       -rdynamic CMakeFiles/cmTC_c2320.dir/feature_tests.cxx.o  -o cmTC_c2320 
+make[1]: Leaving directory '/home/cwz/piko-public/libnvvm-samples/build/CMakeFiles/CMakeTmp'
 
 
     Feature record: CXX_FEATURE:0cxx_aggregate_default_initializers
@@ -383,17 +383,17 @@ make[1]: Leaving directory '/home/cwz/libnvvm-samples/build/CMakeFiles/CMakeTmp'
 
 
 Detecting CXX [-std=c++11] compiler features compiled with the following output:
-Change Dir: /home/cwz/libnvvm-samples/build/CMakeFiles/CMakeTmp
+Change Dir: /home/cwz/piko-public/libnvvm-samples/build/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/make" "cmTC_04819/fast"
-/usr/bin/make -f CMakeFiles/cmTC_04819.dir/build.make CMakeFiles/cmTC_04819.dir/build
-make[1]: Entering directory '/home/cwz/libnvvm-samples/build/CMakeFiles/CMakeTmp'
-Building CXX object CMakeFiles/cmTC_04819.dir/feature_tests.cxx.o
-/usr/bin/c++    -std=c++11 -o CMakeFiles/cmTC_04819.dir/feature_tests.cxx.o -c /home/cwz/libnvvm-samples/build/CMakeFiles/feature_tests.cxx
-Linking CXX executable cmTC_04819
-/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_04819.dir/link.txt --verbose=1
-/usr/bin/c++       -rdynamic CMakeFiles/cmTC_04819.dir/feature_tests.cxx.o  -o cmTC_04819 
-make[1]: Leaving directory '/home/cwz/libnvvm-samples/build/CMakeFiles/CMakeTmp'
+Run Build Command:"/usr/bin/make" "cmTC_12d6c/fast"
+/usr/bin/make -f CMakeFiles/cmTC_12d6c.dir/build.make CMakeFiles/cmTC_12d6c.dir/build
+make[1]: Entering directory '/home/cwz/piko-public/libnvvm-samples/build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_12d6c.dir/feature_tests.cxx.o
+/usr/bin/c++    -std=c++11 -o CMakeFiles/cmTC_12d6c.dir/feature_tests.cxx.o -c /home/cwz/piko-public/libnvvm-samples/build/CMakeFiles/feature_tests.cxx
+Linking CXX executable cmTC_12d6c
+/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_12d6c.dir/link.txt --verbose=1
+/usr/bin/c++       -rdynamic CMakeFiles/cmTC_12d6c.dir/feature_tests.cxx.o  -o cmTC_12d6c 
+make[1]: Leaving directory '/home/cwz/piko-public/libnvvm-samples/build/CMakeFiles/CMakeTmp'
 
 
     Feature record: CXX_FEATURE:0cxx_aggregate_default_initializers
@@ -456,17 +456,17 @@ make[1]: Leaving directory '/home/cwz/libnvvm-samples/build/CMakeFiles/CMakeTmp'
 
 
 Detecting CXX [-std=c++98] compiler features compiled with the following output:
-Change Dir: /home/cwz/libnvvm-samples/build/CMakeFiles/CMakeTmp
+Change Dir: /home/cwz/piko-public/libnvvm-samples/build/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/make" "cmTC_a6fcb/fast"
-/usr/bin/make -f CMakeFiles/cmTC_a6fcb.dir/build.make CMakeFiles/cmTC_a6fcb.dir/build
-make[1]: Entering directory '/home/cwz/libnvvm-samples/build/CMakeFiles/CMakeTmp'
-Building CXX object CMakeFiles/cmTC_a6fcb.dir/feature_tests.cxx.o
-/usr/bin/c++    -std=c++98 -o CMakeFiles/cmTC_a6fcb.dir/feature_tests.cxx.o -c /home/cwz/libnvvm-samples/build/CMakeFiles/feature_tests.cxx
-Linking CXX executable cmTC_a6fcb
-/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_a6fcb.dir/link.txt --verbose=1
-/usr/bin/c++       -rdynamic CMakeFiles/cmTC_a6fcb.dir/feature_tests.cxx.o  -o cmTC_a6fcb 
-make[1]: Leaving directory '/home/cwz/libnvvm-samples/build/CMakeFiles/CMakeTmp'
+Run Build Command:"/usr/bin/make" "cmTC_f4c23/fast"
+/usr/bin/make -f CMakeFiles/cmTC_f4c23.dir/build.make CMakeFiles/cmTC_f4c23.dir/build
+make[1]: Entering directory '/home/cwz/piko-public/libnvvm-samples/build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_f4c23.dir/feature_tests.cxx.o
+/usr/bin/c++    -std=c++98 -o CMakeFiles/cmTC_f4c23.dir/feature_tests.cxx.o -c /home/cwz/piko-public/libnvvm-samples/build/CMakeFiles/feature_tests.cxx
+Linking CXX executable cmTC_f4c23
+/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_f4c23.dir/link.txt --verbose=1
+/usr/bin/c++       -rdynamic CMakeFiles/cmTC_f4c23.dir/feature_tests.cxx.o  -o cmTC_f4c23 
+make[1]: Leaving directory '/home/cwz/piko-public/libnvvm-samples/build/CMakeFiles/CMakeTmp'
 
 
     Feature record: CXX_FEATURE:0cxx_aggregate_default_initializers

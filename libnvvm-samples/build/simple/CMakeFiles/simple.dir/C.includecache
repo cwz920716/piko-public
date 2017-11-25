@@ -14,7 +14,7 @@ string.h
 stdlib.h
 -
 
-/home/cwz/libnvvm-samples/simple/simple.c
+/home/cwz/piko-public/libnvvm-samples/simple/simple.c
 math.h
 -
 cuda.h
@@ -24,7 +24,7 @@ builtin_types.h
 drvapi_error_string.h
 -
 nvvm.h
-/home/cwz/libnvvm-samples/simple/nvvm.h
+/home/cwz/piko-public/libnvvm-samples/simple/nvvm.h
 stdio.h
 -
 stdlib.h

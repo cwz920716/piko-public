@@ -6,5 +6,5 @@ C_FLAGS =   -DLIBNVVM_HOME="/usr/local/cuda-8.0/nvvm"
 
 C_DEFINES = -DLIBDEVICE_MAJOR_VERSION=1 -DLIBDEVICE_MINOR_VERSION=0
 
-C_INCLUDES = -I/usr/local/cuda-8.0/include -I/usr/local/cuda-8.0/nvvm/include -I/home/cwz/libnvvm-samples/common/include 
+C_INCLUDES = -I/usr/local/cuda-8.0/include -I/usr/local/cuda-8.0/nvvm/include -I/home/cwz/piko-public/libnvvm-samples/common/include 
 

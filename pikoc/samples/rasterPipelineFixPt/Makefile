@@ -14,7 +14,8 @@ bin/pikoraster: dirs pikocGPU main.cpp $(OBJS) basicTypes/rasterTypes.h
 
 pikocGPU: dummy.cpp raster.pikostage vertexShader.pikostage rasterPipe.h basicTypes/rasterTypes.h rasterMacros.h
 	@echo - making __pikoCompiledPipe.ptx
-	@../../bin/pikoc $(COMMON_INCLUDES) dummy.cpp
+	@../../bin/pikoc $(COMMON_INCLUDES) --numRuns=10 --opt --timer dummy.cpp
+	@../../bin/ptxgen -arch=compute_35 __pikoCompiledPipe.bc > __pikoCompiledPipe.ptx
 
 bin/pikoraster-cpu: dirs pikocCPU main.cpp $(OBJS) basicTypes/rasterTypes.h
 	@echo - making pikoraster-cpu
@@ -45,4 +46,4 @@ dirs:
 	@mkdir -p obj
 
 clean:
-	rm -f bin/pikoraster bin/pikoraster-cpu __pikoDefines.h __pikoCompiledPipe.h __pikoCompiledPipe.ptx $(OBJS)
+	rm -f bin/pikoraster bin/pikoraster-cpu __pikoDefines.h __pikoCompiledPipe.h __pikoCompiledPipe.ptx __pikoCompiledPipe.bc dummy.cpp.bc $(OBJS)

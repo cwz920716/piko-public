@@ -1,4 +1,4 @@
-# Install script for directory: /home/cwz/libnvvm-samples/simple
+# Install script for directory: /home/cwz/piko-public/libnvvm-samples/simple
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -44,7 +44,7 @@ if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_
          FILE "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/bin/simple"
          RPATH "/usr/local/cuda-8.0/nvvm")
   endif()
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/bin" TYPE EXECUTABLE FILES "/home/cwz/libnvvm-samples/build/simple/simple")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/bin" TYPE EXECUTABLE FILES "/home/cwz/piko-public/libnvvm-samples/build/simple/simple")
   if(EXISTS "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/bin/simple" AND
      NOT IS_SYMLINK "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/bin/simple")
     file(RPATH_CHANGE
@@ -59,8 +59,8 @@ endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
   file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/bin" TYPE FILE FILES
-    "/home/cwz/libnvvm-samples/simple/simple-gpu.ll"
-    "/home/cwz/libnvvm-samples/simple/simple-gpu64.ll"
+    "/home/cwz/piko-public/libnvvm-samples/simple/simple-gpu.ll"
+    "/home/cwz/piko-public/libnvvm-samples/simple/simple-gpu64.ll"
     )
 endif()
 

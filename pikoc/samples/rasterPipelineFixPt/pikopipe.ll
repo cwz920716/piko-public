@@ -1200,7 +1200,6 @@ define { <2 x float>, <2 x float> } @_ZN4piko5crossE6cvec4fS0_(<2 x float> %v1.c
 define void @printInt(i32 %d) #0 {
   %1 = alloca i32, align 4
   store i32 %d, i32* %1, align 4
-  call void asm sideeffect "    //begin printf\0A    .global .align 1 .b8 $$printf_str[4] = {37, 100, 10, 0};\0A    .local .align 8 .b8 \09__local_depot0[8];\0A    .reg .b64 \09%%SP;\0A    .reg .b64 \09%%SPL;\0A    .reg .s32 \09%%r<3>;\0A    .reg .s64 \09%%rd<4>;\0A    mov.u64 \09%%SPL, __local_depot0;\0A    cvta.local.u64 \09%%SP, %%SPL;\0A    add.u64 \09%%rd1, %%SP, 0;\0A    cvta.to.local.u64 \09%%rd2, %%rd1;\0A    cvta.global.u64 \09%%rd3, $$printf_str;\0A    st.local.u32 \09[%%rd2], %0;\0A    .reg .b32 temp_param_reg;\0A    .param .b64 param0;\0A    st.param.b64\09[param0+0], %%rd3;\0A    .param .b64 param1;\0A    st.param.b64\09[param1+0], %%rd1;\0A    .param .b32 retval0;\0A    call.uni (retval0), \0A    vprintf, \0A    (\0A    param0, \0A    param1\0A    );\0A    ld.param.b32\09%%r2, [retval0+0];\0A// end printf\0A", "~{dirflag},~{fpsr},~{flags}"() #8, !srcloc !7
   ret void
 }
 
@@ -1208,7 +1207,6 @@ define void @printInt(i32 %d) #0 {
 define void @printFloat(float %f) #0 {
   %1 = alloca float, align 4
   store float %f, float* %1, align 4
-  call void asm sideeffect "    //begin printf\0A    .global .align 1 .b8 $$printf_str[4] = {37, 102, 10, 0};\0A    .local .align 8 .b8 \09__local_depot0[8];\0A    .reg .b64 \09%%SP;\0A    .reg .b64 \09%%SPL;\0A    .reg .s32 \09%%r<3>;\0A    .reg .f32 \09%%f<2>;\0A    .reg .f64 \09%%fd<2>;\0A    .reg .s64 \09%%rd<4>;\0A    mov.u64 \09%%SPL, __local_depot0;\0A    cvta.local.u64 \09%%SP, %%SPL;\0A    add.u64 \09%%rd1, %%SP, 0;\0A    cvta.to.local.u64 \09%%rd2, %%rd1;\0A    cvta.global.u64 \09%%rd3, $$printf_str;\0A    cvt.f64.f32\09  %%fd0, %0;\0A    st.local.f64 \09[%%rd2], %%fd0;\0A    .reg .b32 temp_param_reg;\0A    .param .b64 param0;\0A    st.param.b64\09[param0+0], %%rd3;\0A    .param .b64 param1;\0A    st.param.b64\09[param1+0], %%rd1;\0A    .param .b32 retval0;\0A    call.uni (retval0), \0A    vprintf, \0A    (\0A    param0, \0A    param1\0A    );\0A    ld.param.b32\09%%r2, [retval0+0];\0A// end printf\0A", "~{dirflag},~{fpsr},~{flags}"() #8, !srcloc !8
   ret void
 }
 
@@ -3226,7 +3224,7 @@ define linkonce_odr i32 @_ZN4piko7min_minEiii(i32 %a, i32 %b, i32 %c) #4 {
   %4 = load i32, i32* %1, align 4
   %5 = load i32, i32* %2, align 4
   %6 = load i32, i32* %3, align 4
-  %7 = call i32 asm sideeffect "vmin.s32.s32.s32.min $0, $1, $2, $3;", "=r,r,r,r,~{dirflag},~{fpsr},~{flags}"(i32 %4, i32 %5, i32 %6) #8, !srcloc !9
+  %7 = call i32 asm sideeffect "vmin.s32.s32.s32.min $0, $1, $2, $3;", "=r,r,r,r,~{dirflag},~{fpsr},~{flags}"(i32 %4, i32 %5, i32 %6) #8, !srcloc !7
   store i32 %7, i32* %v, align 4
   %8 = load i32, i32* %v, align 4
   ret i32 %8
@@ -3254,7 +3252,7 @@ define linkonce_odr i32 @_ZN4piko7max_maxEiii(i32 %a, i32 %b, i32 %c) #4 {
   %4 = load i32, i32* %1, align 4
   %5 = load i32, i32* %2, align 4
   %6 = load i32, i32* %3, align 4
-  %7 = call i32 asm sideeffect "vmax.s32.s32.s32.max $0, $1, $2, $3;", "=r,r,r,r,~{dirflag},~{fpsr},~{flags}"(i32 %4, i32 %5, i32 %6) #8, !srcloc !10
+  %7 = call i32 asm sideeffect "vmax.s32.s32.s32.max $0, $1, $2, $3;", "=r,r,r,r,~{dirflag},~{fpsr},~{flags}"(i32 %4, i32 %5, i32 %6) #8, !srcloc !8
   store i32 %7, i32* %v, align 4
   %8 = load i32, i32* %v, align 4
   ret i32 %8
@@ -3662,7 +3660,7 @@ define linkonce_odr i32 @_ZN4piko4imadEiii(i32 %a, i32 %b, i32 %c) #4 {
   %4 = load i32, i32* %1, align 4
   %5 = load i32, i32* %2, align 4
   %6 = load i32, i32* %3, align 4
-  %7 = call i32 asm sideeffect "vmad.s32.s32.s32.sat $0, $1, $2, $3;", "=r,r,r,r,~{dirflag},~{fpsr},~{flags}"(i32 %4, i32 %5, i32 %6) #8, !srcloc !11
+  %7 = call i32 asm sideeffect "vmad.s32.s32.s32.sat $0, $1, $2, $3;", "=r,r,r,r,~{dirflag},~{fpsr},~{flags}"(i32 %4, i32 %5, i32 %6) #8, !srcloc !9
   store i32 %7, i32* %v, align 4
   %8 = load i32, i32* %v, align 4
   ret i32 %8
@@ -3761,7 +3759,7 @@ define linkonce_odr i32 @_ZN4piko18f32_to_u32_sat_rmiEf(float %a) #4 {
   %v = alloca i32, align 4
   store float %a, float* %1, align 4
   %2 = load float, float* %1, align 4
-  %3 = call i32 asm sideeffect "cvt.rmi.sat.u32.f32 $0, $1;", "=r,f,~{dirflag},~{fpsr},~{flags}"(float %2) #8, !srcloc !12
+  %3 = call i32 asm sideeffect "cvt.rmi.sat.u32.f32 $0, $1;", "=r,f,~{dirflag},~{fpsr},~{flags}"(float %2) #8, !srcloc !10
   store i32 %3, i32* %v, align 4
   %4 = load i32, i32* %v, align 4
   ret i32 %4
@@ -3855,7 +3853,7 @@ define linkonce_odr i32 @_ZN4piko4prmtEjjj(i32 %a, i32 %b, i32 %c) #4 {
   %4 = load i32, i32* %1, align 4
   %5 = load i32, i32* %2, align 4
   %6 = load i32, i32* %3, align 4
-  %7 = call i32 asm sideeffect "prmt.b32 $0, $1, $2, $3;", "=r,r,r,r,~{dirflag},~{fpsr},~{flags}"(i32 %4, i32 %5, i32 %6) #8, !srcloc !13
+  %7 = call i32 asm sideeffect "prmt.b32 $0, $1, $2, $3;", "=r,r,r,r,~{dirflag},~{fpsr},~{flags}"(i32 %4, i32 %5, i32 %6) #8, !srcloc !11
   store i32 %7, i32* %v, align 4
   %8 = load i32, i32* %v, align 4
   ret i32 %8
@@ -4298,10 +4296,8 @@ attributes #8 = { nounwind }
 !4 = !{void (%class.VertexShaderStage*)* @kernel2, !"kernel", i32 1}
 !5 = !{void (%class.RasterStage*)* @kernel3, !"kernel", i32 1}
 !6 = !{void (%class.RasterStage*)* @kernel4, !"kernel", i32 1}
-!7 = !{i32 470375, i32 470402, i32 470470, i32 470521, i32 470549, i32 470578, i32 470608, i32 470639, i32 470682, i32 470722, i32 470758, i32 470802, i32 470850, i32 470906, i32 470943, i32 470974, i32 471017, i32 471048, i32 471091, i32 471123, i32 471155, i32 471177, i32 471190, i32 471210, i32 471228, i32 471242, i32 471303}
-!8 = !{i32 471432, i32 471459, i32 471527, i32 471578, i32 471606, i32 471635, i32 471665, i32 471695, i32 471726, i32 471757, i32 471800, i32 471840, i32 471876, i32 471920, i32 471968, i32 472004, i32 472063, i32 472100, i32 472131, i32 472174, i32 472205, i32 472248, i32 472280, i32 472312, i32 472334, i32 472347, i32 472367, i32 472385, i32 472399, i32 472460}
-!9 = !{i32 450953}
-!10 = !{i32 450777}
-!11 = !{i32 453237}
-!12 = !{i32 454357}
-!13 = !{i32 454522}
+!7 = !{i32 450951}
+!8 = !{i32 450775}
+!9 = !{i32 453235}
+!10 = !{i32 454355}
+!11 = !{i32 454520}

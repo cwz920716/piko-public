@@ -3,7 +3,7 @@
 
 simple/CMakeFiles/simple.dir/simple.c.o
  ../common/include/drvapi_error_string.h
- /home/cwz/libnvvm-samples/simple/simple.c
+ /home/cwz/piko-public/libnvvm-samples/simple/simple.c
  /usr/local/cuda-8.0/include/builtin_types.h
  /usr/local/cuda-8.0/include/cuda.h
  /usr/local/cuda-8.0/include/device_types.h

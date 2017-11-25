@@ -48,10 +48,10 @@ RM = /usr/local/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/cwz/libnvvm-samples
+CMAKE_SOURCE_DIR = /home/cwz/piko-public/libnvvm-samples
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/cwz/libnvvm-samples/build
+CMAKE_BINARY_DIR = /home/cwz/piko-public/libnvvm-samples/build
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -126,14 +126,14 @@ install/fast: preinstall/fast
 
 # The main all target
 all: cmake_check_build_system
-	cd /home/cwz/libnvvm-samples/build && $(CMAKE_COMMAND) -E cmake_progress_start /home/cwz/libnvvm-samples/build/CMakeFiles /home/cwz/libnvvm-samples/build/ptxgen/CMakeFiles/progress.marks
-	cd /home/cwz/libnvvm-samples/build && $(MAKE) -f CMakeFiles/Makefile2 ptxgen/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/cwz/libnvvm-samples/build/CMakeFiles 0
+	cd /home/cwz/piko-public/libnvvm-samples/build && $(CMAKE_COMMAND) -E cmake_progress_start /home/cwz/piko-public/libnvvm-samples/build/CMakeFiles /home/cwz/piko-public/libnvvm-samples/build/ptxgen/CMakeFiles/progress.marks
+	cd /home/cwz/piko-public/libnvvm-samples/build && $(MAKE) -f CMakeFiles/Makefile2 ptxgen/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/cwz/piko-public/libnvvm-samples/build/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
 clean:
-	cd /home/cwz/libnvvm-samples/build && $(MAKE) -f CMakeFiles/Makefile2 ptxgen/clean
+	cd /home/cwz/piko-public/libnvvm-samples/build && $(MAKE) -f CMakeFiles/Makefile2 ptxgen/clean
 .PHONY : clean
 
 # The main clean target
@@ -143,22 +143,22 @@ clean/fast: clean
 
 # Prepare targets for installation.
 preinstall: all
-	cd /home/cwz/libnvvm-samples/build && $(MAKE) -f CMakeFiles/Makefile2 ptxgen/preinstall
+	cd /home/cwz/piko-public/libnvvm-samples/build && $(MAKE) -f CMakeFiles/Makefile2 ptxgen/preinstall
 .PHONY : preinstall
 
 # Prepare targets for installation.
 preinstall/fast:
-	cd /home/cwz/libnvvm-samples/build && $(MAKE) -f CMakeFiles/Makefile2 ptxgen/preinstall
+	cd /home/cwz/piko-public/libnvvm-samples/build && $(MAKE) -f CMakeFiles/Makefile2 ptxgen/preinstall
 .PHONY : preinstall/fast
 
 # clear depends
 depend:
-	cd /home/cwz/libnvvm-samples/build && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
+	cd /home/cwz/piko-public/libnvvm-samples/build && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
 .PHONY : depend
 
 # Convenience name for target.
 ptxgen/CMakeFiles/ptxgen.dir/rule:
-	cd /home/cwz/libnvvm-samples/build && $(MAKE) -f CMakeFiles/Makefile2 ptxgen/CMakeFiles/ptxgen.dir/rule
+	cd /home/cwz/piko-public/libnvvm-samples/build && $(MAKE) -f CMakeFiles/Makefile2 ptxgen/CMakeFiles/ptxgen.dir/rule
 .PHONY : ptxgen/CMakeFiles/ptxgen.dir/rule
 
 # Convenience name for target.
@@ -168,7 +168,7 @@ ptxgen: ptxgen/CMakeFiles/ptxgen.dir/rule
 
 # fast build rule for target.
 ptxgen/fast:
-	cd /home/cwz/libnvvm-samples/build && $(MAKE) -f ptxgen/CMakeFiles/ptxgen.dir/build.make ptxgen/CMakeFiles/ptxgen.dir/build
+	cd /home/cwz/piko-public/libnvvm-samples/build && $(MAKE) -f ptxgen/CMakeFiles/ptxgen.dir/build.make ptxgen/CMakeFiles/ptxgen.dir/build
 .PHONY : ptxgen/fast
 
 ptxgen.o: ptxgen.c.o
@@ -177,7 +177,7 @@ ptxgen.o: ptxgen.c.o
 
 # target to build an object file
 ptxgen.c.o:
-	cd /home/cwz/libnvvm-samples/build && $(MAKE) -f ptxgen/CMakeFiles/ptxgen.dir/build.make ptxgen/CMakeFiles/ptxgen.dir/ptxgen.c.o
+	cd /home/cwz/piko-public/libnvvm-samples/build && $(MAKE) -f ptxgen/CMakeFiles/ptxgen.dir/build.make ptxgen/CMakeFiles/ptxgen.dir/ptxgen.c.o
 .PHONY : ptxgen.c.o
 
 ptxgen.i: ptxgen.c.i
@@ -186,7 +186,7 @@ ptxgen.i: ptxgen.c.i
 
 # target to preprocess a source file
 ptxgen.c.i:
-	cd /home/cwz/libnvvm-samples/build && $(MAKE) -f ptxgen/CMakeFiles/ptxgen.dir/build.make ptxgen/CMakeFiles/ptxgen.dir/ptxgen.c.i
+	cd /home/cwz/piko-public/libnvvm-samples/build && $(MAKE) -f ptxgen/CMakeFiles/ptxgen.dir/build.make ptxgen/CMakeFiles/ptxgen.dir/ptxgen.c.i
 .PHONY : ptxgen.c.i
 
 ptxgen.s: ptxgen.c.s
@@ -195,7 +195,7 @@ ptxgen.s: ptxgen.c.s
 
 # target to generate assembly for a file
 ptxgen.c.s:
-	cd /home/cwz/libnvvm-samples/build && $(MAKE) -f ptxgen/CMakeFiles/ptxgen.dir/build.make ptxgen/CMakeFiles/ptxgen.dir/ptxgen.c.s
+	cd /home/cwz/piko-public/libnvvm-samples/build && $(MAKE) -f ptxgen/CMakeFiles/ptxgen.dir/build.make ptxgen/CMakeFiles/ptxgen.dir/ptxgen.c.s
 .PHONY : ptxgen.c.s
 
 # Help Target
@@ -225,6 +225,6 @@ help:
 # No rule that depends on this can have commands that come from listfiles
 # because they might be regenerated.
 cmake_check_build_system:
-	cd /home/cwz/libnvvm-samples/build && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
+	cd /home/cwz/piko-public/libnvvm-samples/build && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
 .PHONY : cmake_check_build_system
 

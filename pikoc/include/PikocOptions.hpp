@@ -5,6 +5,7 @@
 
 #include <string>
 #include <vector>
+#include <stdlib.h>     /* system, NULL, EXIT_FAILURE */
 
 class PikocOptions {
 public:
@@ -50,6 +51,26 @@ public:
 
   static void printOptions();
   static PikocOptions parseOptions(int argc, char *argv[]);
+};
+
+class CommandBuilder {
+ public:
+  CommandBuilder() {}
+  CommandBuilder(std::string exec): line_(exec) {}
+
+  CommandBuilder &Push(std::string arg) {
+    line_ += " " + arg;
+    return *this;
+  }
+
+  void Execute() {
+    system(line_.c_str());
+  }
+
+  std::string ToString() const { return line_; }
+
+ private:
+  std::string line_;
 };
 
 #endif // PIKOC_OPTIONS_HPP

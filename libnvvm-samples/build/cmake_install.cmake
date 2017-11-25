@@ -1,4 +1,4 @@
-# Install script for directory: /home/cwz/libnvvm-samples
+# Install script for directory: /home/cwz/piko-public/libnvvm-samples
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -39,8 +39,8 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
-  include("/home/cwz/libnvvm-samples/build/ptxgen/cmake_install.cmake")
-  include("/home/cwz/libnvvm-samples/build/simple/cmake_install.cmake")
+  include("/home/cwz/piko-public/libnvvm-samples/build/ptxgen/cmake_install.cmake")
+  include("/home/cwz/piko-public/libnvvm-samples/build/simple/cmake_install.cmake")
 
 endif()
 
@@ -52,5 +52,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/home/cwz/libnvvm-samples/build/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/home/cwz/piko-public/libnvvm-samples/build/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

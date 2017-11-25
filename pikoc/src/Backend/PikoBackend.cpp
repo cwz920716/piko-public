@@ -53,49 +53,35 @@ llvm::Module *LoadModule(llvm::StringRef bitcode, llvm::LLVMContext &context) {
   return module.release();
 }
 
-std::string Concat(std::vector<std::string> &inputs) {
-  if (inputs.size() == 0) {
-    return "";
-  }
-
-  std::string res = inputs[0];
-  for (int i = 1; i < inputs.size(); i++) {
-    res += " " + inputs[i];
-  }
-  return res;
-}
-
 bool PikoBackend::createLLVMModuleBySystem() {
-  std::vector<std::string> Args;
-  std::string Path = pikocOptions.clangDir + "/clang++";
-  Args.push_back(Path);
-  Args.push_back("-D__PIKOC__");
-  Args.push_back("-D__PIKOC_DEVICE__");
-  Args.push_back("-c");
-  Args.push_back("-emit-llvm");
+  std::string path = pikocOptions.clangDir + "/clang++";
+  CommandBuilder cmd(path);
+  cmd.Push("-D__PIKOC__");
+  cmd.Push("-D__PIKOC_DEVICE__");
+  cmd.Push("-c");
+  cmd.Push("-emit-llvm");
 
   std::string include("-I");
   auto include_cwd = include + pikocOptions.workingDir;
   // llvm::errs() << pikocOptions.workingDir.c_str() << "\n";
-  Args.push_back(include_cwd.c_str());
+  cmd.Push(include_cwd.c_str());
   auto include_piko = include + pikocOptions.pikoIncludeDir;
   // llvm::errs() << pikocOptions.pikoIncludeDir.c_str() << "\n";
-  Args.push_back(include_piko.c_str());
+  cmd.Push(include_piko.c_str());
   auto include_res = include + pikocOptions.clangResourceDir;
   // llvm::errs() << pikocOptions.clangResourceDir.c_str() << "\n";
-  Args.push_back(include_res.c_str());
+  cmd.Push(include_res.c_str());
   for(int i = 0; i < pikocOptions.includeDirs.size(); ++i) {
-    Args.push_back(include + pikocOptions.includeDirs[i]);
+    cmd.Push(include + pikocOptions.includeDirs[i]);
   }
-  Args.push_back("-o");
+  cmd.Push("-o");
 
   std::string bitcodeName = pikocOptions.inFileName + ".bc";
-  Args.push_back(bitcodeName);
-  Args.push_back(pikocOptions.inFileName);
+  cmd.Push(bitcodeName);
+  cmd.Push(pikocOptions.inFileName);
 
-  auto Command = Concat(Args);
-  llvm::errs() << "Invoke: " << Command << "\n";
-  system(Command.c_str());
+  llvm::errs() << "Invoke: " << cmd.ToString() << "\n";
+  cmd.Execute();
 
   // std::ifstream bitcode("dummy.bc", std::ios_base::binary);
   this->module = LoadModule(bitcodeName, GlobalContext);

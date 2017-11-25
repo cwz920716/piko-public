@@ -6,7 +6,7 @@
 
 #IncludeRegexTransform: 
 
-/home/cwz/libnvvm-samples/ptxgen/ptxgen.c
+/home/cwz/piko-public/libnvvm-samples/ptxgen/ptxgen.c
 nvvm.h
 -
 stdio.h

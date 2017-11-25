@@ -6,5 +6,5 @@ C_FLAGS =
 
 C_DEFINES = -DBUILD_64_BIT -DLIBDEVICE_MAJOR_VERSION=1 -DLIBDEVICE_MINOR_VERSION=0
 
-C_INCLUDES = -I/home/cwz/libnvvm-samples/build/simple -I/home/cwz/libnvvm-samples/simple -I/usr/local/cuda-8.0/include -I/usr/local/cuda-8.0/nvvm/include -I/home/cwz/libnvvm-samples/common/include 
+C_INCLUDES = -I/home/cwz/piko-public/libnvvm-samples/build/simple -I/home/cwz/piko-public/libnvvm-samples/simple -I/usr/local/cuda-8.0/include -I/usr/local/cuda-8.0/nvvm/include -I/home/cwz/piko-public/libnvvm-samples/common/include 
 
