@@ -13,7 +13,8 @@ bin/reyes: dirs pikocGPU main.cpp $(OBJS)
 	g++ -D__PIKOC_HOST__ -o bin/reyes -I. $(COMMON_INCLUDES) main.cpp $(CUDA_LIB_PATH) $(ASSIMP_LIB_PATH) $(ASSIMP_LIB) $(OBJS) -lcuda -lglut -lGLU -lGL
 
 pikocGPU: dummy.cpp split.pikostage dice.pikostage shade.pikostage reyesPipe.h
-	../../bin/pikoc $(COMMON_INCLUDES) --numRuns=1 --opt --timer dummy.cpp
+	../../bin/pikoc $(COMMON_INCLUDES) --numRuns=10 --opt --timer dummy.cpp
+	../../bin/ptxgen __pikoCompiledPipe.bc > __pikoCompiledPipe.ptx
 
 bin/reyes-cpu: dirs pikocCPU main.cpp $(OBJS)
 	g++ -std=c++11 -D__PIKOC_HOST__ -o bin/reyes-cpu -I. $(COMMON_INCLUDES) main.cpp $(CUDA_LIB_PATH) $(ASSIMP_LIB_PATH) $(ASSIMP_LIB) $(OBJS) -lcuda -lglut -lGLU -lGL
