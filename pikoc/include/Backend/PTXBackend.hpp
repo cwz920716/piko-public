@@ -13,6 +13,9 @@
 
 #include "llvm/IR/Module.h"
 
+
+#define PIKOPIPE_BC "__pikoCompiledPipe.bc"
+
 class PTXBackend : public PikoBackend {
 public:
   explicit PTXBackend(
@@ -37,6 +40,7 @@ protected:
   virtual std::string getTargetTriple() override { return "nvptx64-nvidia-cuda"; }
 
 private:
+  bool emitBitcode(std::string filename);
   void writeKernelFunctionFetch(int kernelID, bool bAllocate, std::ostream& outfile);
   void writeKernelCalls(std::string tabs, std::ostream& outfile);
   void writeKernelRunner(int kernelID, std::string params, std::string tabs,

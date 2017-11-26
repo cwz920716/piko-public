@@ -358,7 +358,7 @@ bool PTXBackend::emitRunFunc(std::ostream& outfile) {
   return true;
 }
 
-bool PTXBackend::emitDeviceCode(std::string filename) {
+bool PTXBackend::emitBitcode(std::string filename) {
   std::string outFileName = filename + ".ptx";
   std::string kernelPrefix = "kernel";
   std::string atomicPrefix = "__atomic_";
@@ -532,7 +532,6 @@ bool PTXBackend::emitDeviceCode(std::string filename) {
     module->dump();
 
   // Save IR to .bc file
-  const char *PIKOPIPE_BC = "__pikoCompiledPipe.bc";
   std::string outputFilename(PIKOPIPE_BC);
   std::error_code ec;
   llvm::tool_output_file out(outputFilename, ec, llvm::sys::fs::F_None);
@@ -543,15 +542,24 @@ bool PTXBackend::emitDeviceCode(std::string filename) {
 
   llvm::WriteBitcodeToFile(module, out.os());
   out.keep();
+	return true;
+}
+
+bool PTXBackend::emitDeviceCode(std::string filename) {
+  if (!emitBitcode(filename)) {
+    return false;
+  }
+
+  std::string outFileName = filename + ".ptx";
 
   // TODO(wcui): NVVM cannot compile to ptx correctly, why?
-  // std::string ptxgen = pikocOptions.pikocDir + "/bin/ptxgen";
-  // std::string arch = std::string("-arch=compute_")
-  //                    + std::to_string(pikocOptions.computeArch);
-  // CommandBuilder cmd(ptxgen);
-  // cmd.Push(arch).Push(PIKOPIPE_BC).Push("> __pikoCompiledPipe.ptx");
-  // llvm::errs() << "Invoke: " << cmd.ToString() << "\n";
-  // cmd.Execute();
+  std::string ptxgen = pikocOptions.pikocDir + "/bin/ptxgen";
+  std::string arch = std::string("-arch=compute_")
+                     + std::to_string(pikocOptions.computeArch);
+  CommandBuilder cmd(ptxgen);
+  cmd.Push(arch).Push(PIKOPIPE_BC).Push("> __pikoCompiledPipe.ptx");
+  llvm::errs() << "Invoke: " << cmd.ToString() << "\n";
+  cmd.Execute();
 	return true;
 }
 

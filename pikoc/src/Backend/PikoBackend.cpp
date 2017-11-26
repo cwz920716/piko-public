@@ -96,7 +96,7 @@ bool PikoBackend::createLLVMModuleBySystem() {
 bool PikoBackend::createLLVMModule() {
   // void *MainAddr = (void*) (intptr_t) GetExecutablePath;
   // std::string Path = pikocOptions.workingDir;
-  std::string Path = "/home/cwz/llvm-root/build-5.0.0/bin/clang++";
+  std::string Path = pikocOptions.clangDir + "/clang++";
   llvm::errs() << "Path=" << Path << "\n";
 
   llvm::IntrusiveRefCntPtr<DiagnosticOptions> DiagOpts = new DiagnosticOptions();

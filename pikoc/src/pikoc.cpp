@@ -449,7 +449,7 @@ int main(int argc, char *argv[]) {
     exit(1);
   }
 
-  // Emit backend device code
+  // Emit backend bitcode
   if(!backend->emitDeviceCode(outFileNameDevice)) {
     llvm::errs() << "Unable to emit device code\n";
     exit(1);
