@@ -1,4 +1,5 @@
 #include "Backend/PTXBackend.hpp"
+#include "Backend/NVVMLoader.hpp"
 
 // #include "llvm/Bitcode/BitcodeReader.h"
 // #include "llvm/Bitcode/BitcodeWriter.h"
@@ -551,16 +552,77 @@ bool PTXBackend::emitDeviceCode(std::string filename) {
   }
 
   std::string outFileName = filename + ".ptx";
-
-  // TODO(wcui): NVVM cannot compile to ptx correctly, why?
-  std::string ptxgen = pikocOptions.pikocDir + "/bin/ptxgen";
   std::string arch = std::string("-arch=compute_")
                      + std::to_string(pikocOptions.computeArch);
-  CommandBuilder cmd(ptxgen);
-  cmd.Push(arch).Push(PIKOPIPE_BC).Push("> __pikoCompiledPipe.ptx");
-  llvm::errs() << "Invoke: " << cmd.ToString() << "\n";
-  cmd.Execute();
-	return true;
+
+  PTXGENStatus status;
+  NVVMLoader nvvm(pikocOptions.cudaDir + "/nvvm");
+
+  status = nvvm.Init();
+  if (status != PTXGEN_SUCCESS) {
+    return false;
+  }
+
+  status = nvvm.AddFile(PIKOPIPE_BC);
+  if (status != PTXGEN_SUCCESS) {
+    return false;
+  }
+
+  int num_options = 3;
+  const char *options[] = {arch.c_str(), "-prec-sqrt=0", "-prec-div=0"};
+  status = nvvm.GeneratePTX(num_options, options, pikocOptions.dumpIR);
+  if (status != PTXGEN_SUCCESS) {
+    return false;
+  }
+
+  char *ptx = nvvm.PTXString();
+
+  std::ofstream ptxOut(outFileName.c_str(), std::ios::trunc);
+  if(!ptxOut.is_open()) {
+    llvm::errs() << "Unable to open PTX output file: " << outFileName << "\n";
+    nvvm.Destroy();
+    return false;
+  }
+
+  // Print out the .version, .target, and .address_size declarations
+  // and everything preceding them
+  bool foundVersion = false;
+  bool foundTarget = false;
+  bool foundAddressSize = false;
+  std::stringstream ss(ptx);
+  do {
+    std::string line;
+    std::getline(ss, line);
+
+    if(line.substr(0,8) == ".version")
+      foundVersion = true;
+    else if(line.substr(0,7) == ".target")
+      foundTarget = true;
+    else if(line.substr(0,13) == ".address_size")
+      foundAddressSize = true;
+
+    ptxOut << line << "\n";
+
+    if(foundVersion && foundTarget && foundAddressSize)
+      break;
+
+  } while(!ss.eof());
+
+  if(! (foundVersion && foundTarget && foundAddressSize) )
+  {
+    llvm::errs() << "ERROR: Failed to find .version, .target, and/or .address_size declarations "
+                 << "in the PTX output\n";
+    ptxOut.close();
+    nvvm.Destroy();
+    return false;
+  }
+
+  // Print out the rest of the PTX code
+  ptxOut << ss.rdbuf();
+  ptxOut.close();
+
+  nvvm.Destroy();
+  return true;
 }
 
 bool PTXBackend::emitAllocateFunc(std::ostream& outfile) {
