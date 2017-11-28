@@ -58,6 +58,7 @@ bool PikoBackend::createLLVMModuleBySystem() {
   CommandBuilder cmd(path);
   cmd.Push("-D__PIKOC__");
   cmd.Push("-D__PIKOC_DEVICE__");
+  cmd.Push("-std=c++11");
   cmd.Push("-c");
   cmd.Push("-emit-llvm");
 

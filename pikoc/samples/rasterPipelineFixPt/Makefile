@@ -18,7 +18,7 @@ pikocGPU: dummy.cpp raster.pikostage vertexShader.pikostage rasterPipe.h basicTy
 
 bin/pikoraster-cpu: dirs pikocCPU main.cpp $(OBJS) basicTypes/rasterTypes.h
 	@echo - making pikoraster-cpu
-	@g++ -std=c++11 -D__PIKOC_HOST__ -o bin/pikoraster-cpu -I. $(COMMON_INCLUDES) main.cpp -L/usr/local/cuda/lib $(ASSIMP_LIB_PATH) $(ASSIMP_LIB) $(OBJS) -lcuda -lGL -lGLU -lglut
+	@g++ -std=c++11 -D__PIKOC_HOST__ -o bin/pikoraster-cpu -I. $(COMMON_INCLUDES) main.cpp -L/usr/local/cuda/lib $(ASSIMP_LIB_PATH) $(ASSIMP_LIB) $(OBJS) -lcuda -lGL -lGLU -lglut -pthread
 
 pikocCPU: dummy.cpp raster.pikostage vertexShader.pikostage rasterPipe.h basicTypes/rasterTypes.h rasterMacros.h
 	@echo - making __pikoCompiledPipe.h for CPU

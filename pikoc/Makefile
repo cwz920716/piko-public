@@ -78,16 +78,16 @@ CLANGLIBS = \
 all: dirs pikoc
 
 $(OBJDIR)/%.o: $(SRCDIR)/Frontend/%.cpp $(DEPS) $(FE_DEPS) $(BE_DEPS)
-	$(CXX) -std=gnu++11 -c -o $@ $< -I$(NVVM_PATH)/include -I$(INCDIR) $(CLANG_BUILD_FLAGS) `$(LLVM_CONFIG_COMP)`
+	$(CXX) -std=c++11 -c -o $@ $< -I$(NVVM_PATH)/include -I$(INCDIR) $(CLANG_BUILD_FLAGS) `$(LLVM_CONFIG_COMP)`
 
 $(OBJDIR)/%.o: $(SRCDIR)/Backend/%.cpp $(DEPS) $(FE_DEPS) $(BE_DEPS)
-	$(CXX) -std=gnu++11 -c -o $@ $< -I$(NVVM_PATH)/include -I$(INCDIR) $(CLANG_BUILD_FLAGS) `$(LLVM_CONFIG_COMP)`
+	$(CXX) -std=c++11 -c -o $@ $< -I$(NVVM_PATH)/include -I$(INCDIR) $(CLANG_BUILD_FLAGS) `$(LLVM_CONFIG_COMP)`
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.cpp $(DEPS) $(FE_DEPS) $(BE_DEPS)
-	$(CXX) -std=gnu++11 -c -o $@ $< -I$(NVVM_PATH)/include -I$(INCDIR) $(CLANG_BUILD_FLAGS) `$(LLVM_CONFIG_COMP)`
+	$(CXX) -std=c++11 -c -o $@ $< -I$(NVVM_PATH)/include -I$(INCDIR) $(CLANG_BUILD_FLAGS) `$(LLVM_CONFIG_COMP)`
 
 pikoc: $(OBJS) $(FE_OBJS) $(BE_OBJS)
-	$(CXX) -std=gnu++11 -o $(BINDIR)/$@ $^ -L$(NVVM_LIB_PATH) $(NVVM_LIB) $(CLANGLIBS) `$(LLVM_CONFIG_LINK)` $(LIBS)
+	$(CXX) -std=c++11 -o $(BINDIR)/$@ $^ -L$(NVVM_LIB_PATH) $(NVVM_LIB) $(CLANGLIBS) `$(LLVM_CONFIG_LINK)` $(LIBS)
 
 clean:
 	rm -f $(OBJDIR)/*.o $(BINDIR)/pikoc

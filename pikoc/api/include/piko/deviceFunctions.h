@@ -19,6 +19,10 @@
   #endif
 #endif
 
+#if defined(__PIKOC_CPU__)
+  #include <thread>
+#endif
+
 enum AssignPolicy {
   PREVIOUS_BINS,
   BOUNDING_BOX,
