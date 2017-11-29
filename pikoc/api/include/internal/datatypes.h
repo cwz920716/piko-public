@@ -1,7 +1,7 @@
 #ifndef DATATYPES_H
 #define DATATYPES_H
 
-#define MAX_NUM_PRIMS 6000000
+#define MAX_NUM_PRIMS 15000000
 
 #include "piko/atomics.h"
 
