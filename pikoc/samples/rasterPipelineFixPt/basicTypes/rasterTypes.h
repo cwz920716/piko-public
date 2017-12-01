@@ -5,6 +5,7 @@
 #include "piko/math.h"
 #include "basicTypes/pikoTypes.h"
 
+// World Triangle
 struct raster_wtri : public Primitive
 {
   int id;
@@ -33,6 +34,7 @@ struct raster_wtri : public Primitive
   }  // end operator =
 };
 
+// Sceen Triangle
 struct raster_stri : public Primitive
 {
   //cvec3f screenPos0, screenPos1, screenPos2;

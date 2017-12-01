@@ -180,7 +180,7 @@ bool PTXBackend::emitRunFunc(std::ostream& outfile) {
   outfile << "  CUdeviceptr d_input;\n";
   outfile << "  PikoArray<" << psum.input_type << "> h_input;\n";
   outfile << "\n";
-  outfile << "  h_input.allocate();\n";
+  outfile << "  h_input.allocateOnce(count);\n";
   outfile << "  h_input.copyData(inputData, count);\n";
   outfile << "  CUDACHECK(cuMemAlloc(&d_mutableState, sizeof(" << psum.mutableState_type << ")));\n";
   outfile << "  CUDACHECK(cuMemAlloc(&d_input, sizeof(" << psum.input_type << ")));\n";
@@ -707,7 +707,7 @@ bool PTXBackend::emitAllocateFunc(std::ostream& outfile) {
 
 
   outfile << "  // Piko initial input data\n";
-  outfile << "  h_input.allocate();\n";
+  outfile << "  h_input.allocateOnce(count);\n";
   outfile << "  h_input.copyData(inputData, count);\n";
   outfile << "  CUDACHECK(cuMemAlloc(&d_mutableState, sizeof(" << psum.mutableState_type << ")));\n";
   outfile << "  CUDACHECK(cuMemAlloc(&d_input, sizeof(" << psum.input_type << ")));\n";
@@ -726,6 +726,9 @@ bool PTXBackend::emitAllocateFunc(std::ostream& outfile) {
       outfile << "true";
     else
       outfile << "false";
+    if (ii == psum.stagesInOrder.begin()) {
+      outfile << ", count*10";
+    }
     outfile << ");\n";
     for(int i=0; i < NUM_PORTS; ++i) {
       outfile << "  " << stgName << ".outPortTypes[" << i << "] = "

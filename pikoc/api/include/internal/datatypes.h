@@ -33,9 +33,21 @@ public:
 #ifdef __PIKOC_HOST__
   void allocate() {
     #if defined(__PIKOC_PTX__)
+        // printf("Allocate CUDA %dx%ld Bytes.\n", maxPrims_, sizeof(T));
         CUDACHECK(cuMemAlloc(&data_, maxPrims_*sizeof(T)));
     #elif defined(__PIKOC_CPU__)
         data_ = (T*) malloc(maxPrims_*sizeof(T));
+    #else
+      This_Code_Should_Never_Get_Compiled_!
+    #endif
+  }
+
+  void allocateOnce(int count) {
+    #if defined(__PIKOC_PTX__)
+        // printf("Allocate CUDA %dx%ld Bytes.\n", count, sizeof(T));
+        CUDACHECK(cuMemAlloc(&data_, count*sizeof(T)));
+    #elif defined(__PIKOC_CPU__)
+        data_ = (T*) malloc(count*sizeof(T));
     #else
       This_Code_Should_Never_Get_Compiled_!
     #endif
@@ -114,6 +126,10 @@ class PikoArray : public PikoDataStructure<T> {
 public:
   PikoArray()
   : PikoDataStructure<T>(MAX_NUM_PRIMS)
+  {}
+
+  PikoArray(int size)
+  : PikoDataStructure<T>(size)
   {}
 
 #ifndef __PIKOC_ANALYSIS_PHASE__

@@ -9,6 +9,7 @@
 #include "internal/datatypes.h"
 
 #ifdef __PIKOC_HOST__
+  #include <iostream>
   #include <cstdlib>
   #include <map>
 #ifdef __PIKOC_PTX__
@@ -255,10 +256,10 @@ public:
 #ifdef __PIKOC_HOST__
   #if defined(__PIKOC_PTX__)
   void allocate(ConstantState* constStateArg, CUdeviceptr d_mutableState,
-    std::map<void*, CUdeviceptr> stgMap, bool fused)
+    std::map<void*, CUdeviceptr> stgMap, bool fused, int numPrims = 0)
   #elif defined(__PIKOC_CPU__)
   void allocate(ConstantState* constStateArg, MutableState* d_mutableState,
-    std::map<void*, StageFloor*> stgMap, bool fused)
+    std::map<void*, StageFloor*> stgMap, bool fused, int numPrims = 0)
   #else
     This_Code_Should_Never_Get_Compiled_!
   #endif
@@ -278,7 +279,13 @@ public:
 
     int maxPrimsPerBin =
       std::max( ceil( ( (double) MAX_NUM_PRIMS) / numBins_ ), 100.0);
+    if (numPrims != 0) {
+      maxPrimsPerBin =
+        std::max( ceil( ( (double) numPrims) / numBins_ ), 100.0);
+    }
 
+    std::cout << "Allocate Bin<InPrimType>.data_ " << numBins_ << "x" << maxPrimsPerBin << "x" << sizeof(InPrimType)
+                << " Bytes" << std::endl;
     h_bins_ = (Bin<InPrimType>*) malloc(numBins_*sizeof(Bin<InPrimType>));
     for(unsigned i = 0; i < numBins_; ++i) {
       h_bins_[i] = *(new Bin<InPrimType>(maxPrimsPerBin));
@@ -286,6 +293,8 @@ public:
     }
 
     #if defined(__PIKOC_PTX__)
+      std::cout << "Allocate Bin<InPrimType>.class " << numBins_ << "x" << sizeof(Bin<InPrimType>)
+                << " Bytes" << std::endl;
       CUDACHECK(cuMemAlloc(&d_bins_, numBins_*sizeof(Bin<InPrimType>)));
       CUDACHECK(cuMemcpyHtoD(d_bins_, h_bins_,
         numBins_*sizeof(Bin<InPrimType>)));
