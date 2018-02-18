@@ -1,4 +1,4 @@
-Note: This code has been tested only on Ubuntu Linux 12.04.
+Note: This code has been tested only on Ubuntu Linux 16.04.
 
 Prerequisites:
 	1) NVIDIA CUDA 8.0 (currently available as a Release Candidate)
